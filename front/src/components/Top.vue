@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <header></header>
+  <div class="top">
     <h2>ここがトップページやで</h2>
-    <a href="/login">ログイン</a>
   </div>
 </template>
