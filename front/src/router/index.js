@@ -9,6 +9,11 @@ const routes = [
     path: '/',
     name: 'Top',
     component: Top
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
   }
 ]
 
