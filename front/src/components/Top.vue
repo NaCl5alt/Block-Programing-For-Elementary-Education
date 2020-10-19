@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="top">
     <h2>ここがトップページやで</h2>
   </div>
 </template>
