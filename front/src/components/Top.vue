@@ -1,8 +1,7 @@
 <template>
   <div>
     <header></header>
-    <h2>Hello, World!!</h2>
-    <form action="" method="post">
-    </form>
+    <h2>ここがトップページやで</h2>
+    <a href="/login">ログイン</a>
   </div>
 </template>
