@@ -2,16 +2,16 @@
     <div class="header">
       <h1>logo</h1>
       <span v-if="userlogin==true">
-        <button @click="mypage" type="button" value="mypage" >ƒ}ƒCƒy[ƒW</button>
-        <button @click="logout" type="submit" value="logout" >ƒƒOƒAƒEƒg</button>
+        <button @click="mypage" type="button" value="mypage" >ãƒžã‚¤ãƒšãƒ¼ã‚¸</button>
+        <button @click="logout" type="submit" value="logout" >ãƒ­ã‚°ã‚¢ã‚¦ãƒˆ</button>
       </span>
       <span v-else-if="adminlogin==true">
-        <button @click="adminpage" type="button" value="adminpage" >ŠÇ—ŽÒƒy[ƒW</button>
-        <button @click="logout" type="submit" value="logout" >ƒƒOƒAƒEƒg</button>
+        <button @click="adminpage" type="button" value="adminpage" >ç®¡ç†è€…ãƒšãƒ¼ã‚¸</button>
+        <button @click="logout" type="submit" value="logout" >ãƒ­ã‚°ã‚¢ã‚¦ãƒˆ</button>
       </span>
       <span v-else>
-        <button @click="login" type="submit" value="login" >ƒƒOƒCƒ“</button>
-        <button @click="register" type="submit" value="register" >V‹K“o˜^</button>
+        <button @click="login" type="submit" value="login" >ãƒ­ã‚°ã‚¤ãƒ³</button>
+        <button @click="register" type="submit" value="register" >æ–°è¦ç™»éŒ²</button>
       </span>
     </div>
 
