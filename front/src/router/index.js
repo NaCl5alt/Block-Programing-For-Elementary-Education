@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Top from '../components/Top.vue'
+import Top from '../components/Top'
+import Login from '../components/Login'
+import Regist from '../components/resist'
 
 Vue.use(VueRouter)
 
@@ -14,6 +16,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/regist',
+    name: 'Regist',
+    component: Regist
   }
 ]
 
