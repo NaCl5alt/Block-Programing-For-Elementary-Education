@@ -1,6 +1,7 @@
 <template>
     <div class="header">
       <h1>logo</h1>
+      <!-- <img src="/img/logo.png" height="300" width="400" alt="ロゴ" align="left"> -->
       <span v-if="userlogin==true">
         <button @click="mypage" type="button" value="mypage" >マイページ</button>
         <button @click="logout" type="submit" value="logout" >ログアウト</button>
