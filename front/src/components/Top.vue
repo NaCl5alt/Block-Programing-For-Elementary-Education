@@ -1,6 +1,5 @@
 <template>
   <div class="top">
-    <h2>ADSDJKANSJKDNASKJdn</h2>
     <p id="appname">ここがトップページやで</p>
   </div>
 </template>
@@ -11,7 +10,7 @@ export default {
 </script>
 
 <style scoped>
-#appname{
-  font-size: large;
+.top{
+  color: blue;
 }
 </style>
