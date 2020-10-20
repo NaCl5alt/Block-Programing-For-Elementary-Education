@@ -11,4 +11,7 @@ export default {
 </script>
 
 <style scoped>
+.top {
+  background-color: cyan;
+}
 </style>
