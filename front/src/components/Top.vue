@@ -1,7 +1,6 @@
 <template>
   <div class="top">
     <p id="appname">ここがトップページやで</p>
-    <p>ああああ</p>
   </div>
 </template>
 
@@ -11,4 +10,7 @@ export default {
 </script>
 
 <style scoped>
+#appname{
+  font-size: large;
+}
 </style>
