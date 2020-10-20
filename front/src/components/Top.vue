@@ -1,14 +1,12 @@
 <template>
+<!-- HTML -->
   <div class="top">
-    <p id="appname">ここがトップページやで</p>
-
-    <div>
-      <form action="" method="post">
-        <p>
-          UserID: <input type="text" name="user_id">
-        </p>
-      </form>
-    </div>
+    <h1>For Educations!</h1>
+     <b-button
+      size="lg"
+      variant="outline-primary">
+      Bootstrap Button
+    </b-button>
   </div>
 </template>
 
@@ -16,3 +14,6 @@
 export default {
 }
 </script>
+
+<style scoped>
+</style>
