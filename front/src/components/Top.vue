@@ -1,6 +1,7 @@
 <template>
   <div class="top">
-    <h2>ここがトップページやで</h2>
+    <p id="appname">ここがトップページやで</p>
+    <p>ああああ</p>
   </div>
 </template>
 
@@ -9,6 +10,5 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-
+<style scoped>
 </style>
