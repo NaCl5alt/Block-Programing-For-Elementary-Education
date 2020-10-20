@@ -1,19 +1,53 @@
 <style scoped>
 
+h1 {
+  font-style: italic;
+}
+
 </style>
 
 <template>
 <!-- HTML -->
-  <div>
-    <h1>For Educations!</h1>
-    <!-- <b-alert show>Default Alert</b-alert> -->
-    <div>
-      <b-form>
-        <b-form-group>
-          <b-textarea></b-textarea>
-        </b-form-group>
-      </b-form>
-    </div>
+  <div id="body-div">
+
+    <b-container fluid>
+
+      <b-row>
+
+        <b-col sm="6">
+          <h1>For Educations!</h1>
+        </b-col>
+
+        <b-col sm="4">
+
+          <div id="form-div">
+
+            <b-card bg-variant="light">
+              <h2>ログイン</h2>
+              <b-form>
+
+                <b-form-group label="ユーザID" label-cols-sm="4">
+                  <b-form-input type="text"></b-form-input>
+                </b-form-group>
+
+                <b-form-group label="パスワード" label-cols-sm="4">
+                  <b-form-input type="password"></b-form-input>
+                </b-form-group>
+
+                <b-button pill type="submit" variant="primary">ログイン</b-button>
+                <b-button pill type="reset" variant="outline-danger">リセット</b-button>
+
+              </b-form>
+            </b-card>
+
+          </div>
+
+        </b-col>
+
+      </b-row>
+
+    </b-container>
+
   </div>
 </template>
 
