@@ -36,7 +36,7 @@ const routes = [
     component: Questions
   },
   {
-    paht: '/quesstion/:id',
+    path: '/quesstion/:id',
     name: 'Question',
     component: Question
   },
