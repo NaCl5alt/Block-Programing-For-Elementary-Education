@@ -1,5 +1,9 @@
 <style scoped>
 
+h1 {
+  font-style: italic;
+}
+
 </style>
 
 <template>
