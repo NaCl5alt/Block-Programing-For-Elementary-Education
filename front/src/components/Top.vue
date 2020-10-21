@@ -16,6 +16,15 @@ h1 {
         <!-- アプリタイトル -->
         <b-col sm="6">
           <h1>For Educations!</h1>
+          <div>
+            <h2>テスト用</h2>
+            <b-list-group>
+              <b-list-group-item to="/login">ログイン画面へ</b-list-group-item>
+              <b-list-group-item to="/regist">新規登録画面へ</b-list-group-item>
+              <b-list-group-item to="/question">問題一覧画面へ</b-list-group-item>
+              <b-list-group-item to="/admin">管理者画面へ</b-list-group-item>
+            </b-list-group>
+          </div>
         </b-col>
 
         <!-- ログインフォーム -->
