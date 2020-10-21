@@ -2,26 +2,25 @@
 
 h1 {
   font-style: italic;
+  text-align: center;
 }
 
 </style>
 
 <template>
-<!-- HTML -->
   <div id="body-div">
 
     <b-container fluid>
 
       <b-row>
-
+        <!-- アプリタイトル -->
         <b-col sm="6">
           <h1>For Educations!</h1>
         </b-col>
 
+        <!-- ログインフォーム -->
         <b-col sm="4">
-
           <div id="form-div">
-
             <b-card bg-variant="light">
               <h2>ログイン</h2>
               <b-form>
