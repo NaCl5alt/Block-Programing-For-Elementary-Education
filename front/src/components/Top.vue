@@ -14,10 +14,10 @@ h1 {
 
       <b-row>
         <!-- アプリタイトル -->
-        <b-col sm="6">
+        <b-col sm="7">
           <h1>For Educations!</h1>
           <div>
-            <h2>テスト用</h2>
+            <p class="h2">開発用</p>
             <b-list-group>
               <b-list-group-item to="/login">ログイン画面へ</b-list-group-item>
               <b-list-group-item to="/regist">新規登録画面へ</b-list-group-item>
@@ -28,7 +28,7 @@ h1 {
         </b-col>
 
         <!-- ログインフォーム -->
-        <b-col sm="4">
+        <b-col sm="5">
           <div id="form-div">
             <b-card bg-variant="light">
               <h2>ログイン</h2>
@@ -42,8 +42,15 @@ h1 {
                   <b-form-input type="password"></b-form-input>
                 </b-form-group>
 
-                <b-button pill type="submit" variant="primary">ログイン</b-button>
-                <b-button pill type="reset" variant="outline-danger">リセット</b-button>
+                <b-row>
+                  <b-col></b-col>
+                  <b-col>
+                    <b-button pill type="submit" variant="outline-primary">ログイン</b-button>
+                  </b-col>
+                  <b-col>
+                    <b-button pill type="reset" variant="outline-danger">リセット</b-button>
+                  </b-col>
+                </b-row>
 
               </b-form>
             </b-card>
