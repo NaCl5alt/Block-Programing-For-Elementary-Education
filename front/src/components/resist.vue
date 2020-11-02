@@ -4,9 +4,9 @@
         <h5>新規登録</h5>
         <p><input type="text" v-model="mailAddress" placeholder="メールアドレス"></p>
         <p><input type="password" v-model="password" placeholder="パスワード"></p>
-        <div class="links">
+        <b-button class="links">
           <a class="button--green">新規登録</a>
-        </div>
+        </b-button>
       </section>
     </div>
 </template>
