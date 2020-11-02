@@ -15,6 +15,9 @@ h1 {
         <!-- アプリタイトル -->
         <b-col sm="7">
           <b-jumbotron
+            bg-variant="info"
+            text-variant="white"
+            border-variant="dark"
             header="For Educations!"
             lead="Programming Beginner"
           ></b-jumbotron>
@@ -40,7 +43,11 @@ h1 {
               <h2>ログイン</h2>
 
               <b-form>
-                <b-form-group label="ユーザID" label-cols-sm="4">
+                <b-form-group
+                  label="ユーザID"
+                  label-cols-sm="4"
+                  description="未登録の方は新規登録をしてください。"
+                >
                   <b-form-input
                     v-model="user_id"
                     type="text"
@@ -79,7 +86,7 @@ h1 {
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 export default {
   data() {
     return {
@@ -88,7 +95,11 @@ export default {
     };
   },
   methods: {
-    async login() {},
+    async login() {
+      var params = new URLSearchParams();
+      params.append("user_id", this.user_id);
+      params.append("password", this.password);
+    },
   },
 };
 </script>
