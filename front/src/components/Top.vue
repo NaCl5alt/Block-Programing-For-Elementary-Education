@@ -3,6 +3,9 @@ h1 {
   font-style: italic;
   text-align: center;
 }
+#body-div {
+  padding: 10px;
+}
 </style>
 
 <template>
@@ -38,11 +41,19 @@ h1 {
 
               <b-form>
                 <b-form-group label="ユーザID" label-cols-sm="4">
-                  <b-form-input type="text" name="user_id"></b-form-input>
+                  <b-form-input
+                    v-model="user_id"
+                    type="text"
+                    name="user_id"
+                  ></b-form-input>
                 </b-form-group>
 
                 <b-form-group label="パスワード" label-cols-sm="4">
-                  <b-form-input type="password" name="password"></b-form-input>
+                  <b-form-input
+                    v-model="password"
+                    type="password"
+                    name="password"
+                  ></b-form-input>
                 </b-form-group>
 
                 <b-row>
@@ -68,5 +79,16 @@ h1 {
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+export default {
+  data() {
+    return {
+      user_id: "",
+      password: "",
+    };
+  },
+  methods: {
+    async login() {},
+  },
+};
 </script>
