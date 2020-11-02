@@ -12,7 +12,8 @@
       </span>
       <span v-else>
         <button @click="login" type="submit" value="login" >ログイン</button>
-        <button @click="register" type="submit" value="register" >新規登録</button>
+        <button @click="regist" type="button" value="register" >新規登録</button>
+        <!--<button @click="register" type="submit" value="register" >新規登録</button>-->
       </span>
     </div>
 
