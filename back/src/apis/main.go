@@ -5,7 +5,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"./model"
+	"apis/model"
 )
 
 func gormConnect() *gorm.DB {
