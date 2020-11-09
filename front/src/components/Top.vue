@@ -42,7 +42,7 @@ h1 {
             <b-card bg-variant="light">
               <h2>ログイン</h2>
 
-              <b-form>
+              <b-form v-on:submit.prevent="login">
                 <b-form-group
                   label="ユーザID"
                   label-cols-sm="4"
@@ -86,7 +86,7 @@ h1 {
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -96,9 +96,31 @@ export default {
   },
   methods: {
     async login() {
+      // クエリっぽいの作成
       var params = new URLSearchParams();
-      params.append("user_id", this.user_id);
+      params.append("userid", this.user_id);
       params.append("password", this.password);
+
+      await axios
+        .post("/login", params, {})
+        .then((res) => {
+          // ログイン成功
+          // Cookieに保存
+          const token = res.data.token;
+          this.$cookie.set("token", token);
+          var path = "/";
+          if (this.$route.query.redirect) {
+            path = path + this.$route.query.redirect;
+          }
+          console.log(path);
+          this.$router.push({ path: path });
+          this.$router.go();
+        })
+        .catch((error) => {
+          // ログイン失敗
+          // エラー処理
+          console.log(error);
+        });
     },
   },
 };
