@@ -5,7 +5,7 @@
           <h5>新規登録</h5>
           <p><b-form-input type="text" v-model="mailAddress" placeholder="メールアドレス"/></p>
           <p><b-form-input type="password" v-model="password" placeholder="パスワード"/></p>
-          <b-button class="links" variant="outline-primary">
+          <b-button block variant="primary">
             <a class="button--green">新規登録</a>
           </b-button>
         </section>
