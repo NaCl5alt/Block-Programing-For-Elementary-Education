@@ -1,16 +1,35 @@
 package main
 
-import(
-	"net/http"
-	"github.com/gin-gonic/gin"
+import (
+	"fmt"
+
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"./model"
 )
 
-func main(){
-	r := gin.Default()
+func gormConnect() *gorm.DB {
+	DBMS := "mysql"
+	USER := "user"
+	PASS := "user"
+	PROTOCOL := "tcp(localhost:3306)"
+	DBNAME := "BlockProgram"
+	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
+	db, err := gorm.Open(DBMS, CONNECT)
 
-	r.GET("/hello", func(c *gin.Context){
-		c.String(http.StatusOK, "Hello world")
-	})
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Println("db connected: ", &db)
+	return db
+}
 
-	r.Run(":8080")
+func main() {
+	db := gormConnect()
+
+	db.Set("gorm:table_options", "ENGINE=InnoDB")
+	db.AutoMigrate(&model.User{})
+
+	defer db.Close()
+	db.LogMode(true)
 }
