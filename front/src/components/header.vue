@@ -1,21 +1,28 @@
 <template>
-  <div id="header">
+
+<div id="header">
+  <div class="border border-info">
+    <div class="bg-info">
     <div class="section1 text-left" style="float: left;">
-      <img src="../assets/logo.png" height="50" width="50" alt="ロゴ" href="/">
+      <a href="/">
+      <img src="../assets/logo.png" height="50" width="50" alt="ロゴ">
+      </a>
       </div>
+
     <div class="section1 text-right" style="float: right;">
-      <span v-if="userlogin==true">
-      <b-button squared
+
+      <span v-if="userlogin==true&&adminlogin==false">
+      <!--<b-button squared
       size="lg"
-      variant="outline-success"
-      style="width:150px; height:50px;"
+      variant="success"
+      style="width:200px; height:50px;"
       href="/user"
       >ユーザーページ
-      </b-button>
+      </b-button>-->
       <b-button squared
       size="lg"
-      variant="outline-danger"
-      style="width:150px; height:50px;"
+      variant="danger"
+      style="width:200px; height:50px;"
       href="/logout"
       >ログアウト
       </b-button>
@@ -23,15 +30,15 @@
       <span v-else-if="adminlogin==true">
       <b-button squared
       size="lg"
-      variant="outline-success"
-      style="width:150px; height:50px;"
+      variant="success"
+      style="width:200px; height:50px;"
       href="/admin"
       >管理者ページ
       </b-button>
       <b-button squared
       size="lg"
-      variant="outline-danger"
-      style="width:150px; height:50px;"
+      variant="danger"
+      style="width:200px; height:50px;"
       href="/logout"
       >ログアウト
       </b-button>
@@ -40,14 +47,14 @@
         <b-button squared
         size="lg"
         variant="success"
-        style="width:150px; height:50px;"
+        style="width:200px; height:50px;"
         href="/login"
         >ログイン
         </b-button>
         <b-button squared
         size="lg"
         variant="danger"
-        style="width:150px; height:50px;"
+        style="width:200px; height:50px;"
         href="/regist"
         >新規登録
       </b-button>
@@ -55,5 +62,19 @@
       </div>
       <div class="section1 clear" style="clear: both;">
       </div>
+
+      </div>
+    </div>
     </div>
 </template>
+
+<script>
+export default {
+  data () {
+    return {
+      userlogin: 'false',
+      adminlogin: 'false'
+    }
+  }
+}
+</script>
