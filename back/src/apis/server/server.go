@@ -13,8 +13,6 @@ import (
 func SetRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
-	//READ
-	//全レコード
 	r.GET("/users", func(c *gin.Context) {
 		users := []model.User{}
 		db.Find(&users)
