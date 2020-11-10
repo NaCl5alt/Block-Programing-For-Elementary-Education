@@ -108,10 +108,10 @@ export default {
           // Cookieに保存
           const token = res.data.token;
           this.$cookie.set("token", token);
-          var path = "/";
-          if (this.$route.query.redirect) {
-            path = path + this.$route.query.redirect;
-          }
+          var path = "/question";
+          // if (this.$route.query.redirect) {
+          //   path = path + this.$route.query.redirect;
+          // }
           console.log(path);
           this.$router.push({ path: path });
           this.$router.go();
