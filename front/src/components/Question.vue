@@ -1,6 +1,14 @@
 <template>
   <div>
-    <h2>問題</h2>
+    <b-jumbotron :header=datas.title :lead=datas.content>
+      <ul>
+        <b-button v-b-modal="'modal-1'">{{ hint }}</b-button>
+        <b-modal id="modal-1" title="ヒント1">
+          <p>{{ hint }}</p>
+        </b-modal>
+      </ul>
+    </b-jumbotron>
+
     <BlocklyComponent id="blockly1" :options="options" ref="foo"></BlocklyComponent>
     <p id="code">
       <button v-on:click="showCode()">Show JavaScript</button>
@@ -12,7 +20,7 @@
 <script>
 /**
  * @license
- * 
+ *
  * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,31 +41,36 @@
  * @author samelh@google.com (Sam El-Husseini)
  */
 
-import BlocklyComponent from './BlocklyComponent.vue'
-import '../blocks/stocks';
-import '../prompt';
+import BlocklyComponent from "./BlocklyComponent.vue";
+import "../blocks/stocks";
+import "../prompt";
 
-import BlocklyJS from 'blockly/javascript';
+import BlocklyJS from "blockly/javascript";
+// import axios from "axios";
 
 export default {
-  name: 'Question',
+  name: "Question",
   components: {
-    BlocklyComponent
+    BlocklyComponent,
   },
-  data(){
+  data() {
     return {
-      code: '',
+      code: "",
+      datas: {
+        qid: 1,
+        title: "TEST",
+        content: "ASADKSJFNJKDNFKJAN",
+        hints: [{ hint: "HINT1" }, { hint: "HINT2" }],
+      },
       options: {
-        media: 'media/',
-        grid:
-          {
-            spacing: 25,
-            length: 3,
-            colour: '#ccc',
-            snap: true
-          },
-        toolbox:
-        `<xml>
+        media: "media/",
+        grid: {
+          spacing: 25,
+          length: 3,
+          colour: "#ccc",
+          snap: true,
+        },
+        toolbox: `<xml>
           <category name="Logic" colour="%{BKY_LOGIC_HUE}">
             <block type="controls_if"></block>
             <block type="logic_compare"></block>
@@ -94,20 +107,32 @@ export default {
             <block type="stock_buy_prog"></block>
             <block type="stock_fetch_price"></block>
           </category>
-        </xml>`
-      }
-    }
+        </xml>`,
+      },
+    };
   },
   methods: {
+    window: (onload = function () {
+      // axios.get("/question/${this.$route.params['id']}")
+      //   .then((response) => {
+      // })
+      // .catch((err) => {
+      // console.log(err);
+      // let path = "/question";
+      // this.$router.push({ path: path });
+      // this.$router.go();
+      // });
+    }),
     showCode() {
       this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>
-html, body {
+html,
+body {
   margin: 0;
 }
 
