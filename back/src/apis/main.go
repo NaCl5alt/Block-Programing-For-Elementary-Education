@@ -3,12 +3,12 @@ package main
 import (
 	"./db"
 	"./model"
-	"./server"
+	"./router"
 )
 
 func main() {
 	db := db.GormConnect()
-	r := server.SetRouter(db)
+	r := router.SetRouter(db)
 
 	db.Set("gorm:table_options", "ENGINE=InnoDB")
 	db.AutoMigrate(&model.User{})

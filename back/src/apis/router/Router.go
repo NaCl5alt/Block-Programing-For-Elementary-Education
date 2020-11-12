@@ -1,4 +1,4 @@
-package server
+package router
 
 import (
 	"../controller"
@@ -14,6 +14,7 @@ func SetRouter(db *gorm.DB) *gin.Engine {
 	ctrl := controller.UserController{}
 	r.GET("/users", ctrl.List)
 	r.POST("/users", ctrl.Create)
+	r.POST("/login", ctrl.Login)
 
 	return r
 }
