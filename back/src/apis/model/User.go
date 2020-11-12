@@ -1,13 +1,14 @@
 package model
 
 import (
-	"time"
 	"github.com/jinzhu/gorm"
 )
 
 type User struct {
 	gorm.Model
-	Name     string    `json:"name"`
-	Age      int       `json:age`
-	Birthday time.Time `json:birthday`
+	User_ID    string `json:"userid"`
+	User_Name  string `json:"name"`
+	Password   string `json:"password"`
+	Admin      bool   `json:"admin"`
+	DeleteFlag bool   `json:"delete"`
 }

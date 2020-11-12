@@ -13,7 +13,7 @@ func GormConnect() *gorm.DB {
 	PASS := "root"
 	PROTOCOL := "tcp(localhost:3306)"
 	DBNAME := "BlockProgram"
-	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
+	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?parseTime=true"
 	db, err := gorm.Open(DBMS, CONNECT)
 
 	if err != nil {
