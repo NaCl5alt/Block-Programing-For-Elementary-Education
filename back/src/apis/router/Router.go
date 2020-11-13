@@ -12,9 +12,11 @@ func SetRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
 	ctrl := controller.UserController{}
-	r.GET("/users", ctrl.List)
-	r.POST("/users", ctrl.Create)
+	r.GET("/user", ctrl.List)
+	r.POST("/user", ctrl.Create)
 	r.POST("/login", ctrl.Login)
+	r.DELETE("/user", ctrl.Delete)
+	r.POST("/user/edit", ctrl.Edit)
 
 	return r
 }
