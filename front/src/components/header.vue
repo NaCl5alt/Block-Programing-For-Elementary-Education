@@ -72,8 +72,9 @@
 export default {
   data () {
     return {
+      adminlogin: 'false',
       userlogin: 'false',
-      adminlogin: 'false'
+      user_id: ""
     }
   }
 }
