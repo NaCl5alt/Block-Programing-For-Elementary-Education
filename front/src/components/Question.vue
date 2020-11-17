@@ -113,15 +113,16 @@ export default {
   },
   methods: {
     window: (onload = function () {
-      // axios.get("/question/${this.$route.params['id']}")
-      //   .then((response) => {
-      // })
-      // .catch((err) => {
-      // console.log(err);
-      // let path = "/question";
-      // this.$router.push({ path: path });
-      // this.$router.go();
-      // });
+      axios
+        .get("/question/${this.$route.params['id']}")
+        .then((response) => {})
+        .catch((err) => {
+          console.log(err);
+          // 問題一覧へ戻る
+          let path = "/question";
+          this.$router.push({ path: path });
+          this.$router.go();
+        });
     }),
     showCode() {
       this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
