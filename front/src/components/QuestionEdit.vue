@@ -1,11 +1,17 @@
 <style scoped>
+#question_id {
+  font-size: 70%;
+  color: gray;
+}
 </style>
 
 <template>
   <div>
-    <b-container fluid>
+    <b-container>
       <h1>編集</h1>
-      <h3>問題タイトル: {{ title }}</h3>
+      <h3>
+        問題タイトル: {{ title }} <span id="question_id">(ID: {{ id }})</span>
+      </h3>
       <!-- <b-form></b-form> -->
     </b-container>
   </div>
@@ -16,6 +22,7 @@
 export default {
   data() {
     return {
+      id: 0,
       title: "test",
       content: "",
       answer: "",
@@ -23,6 +30,9 @@ export default {
   },
   methods: {
     window: (onload = function () {
+      // ここ修正
+      // this.id = this.$route.params["id"];
+      // console.log(this.$route.params);
       // axios
       //   .get("http://localhost/question/${this.$route.params['id']}/detail")
       //   .then((response) => {
