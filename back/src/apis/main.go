@@ -19,5 +19,5 @@ func main() {
 	defer db.Close()
 	db.LogMode(true)
 
-	r.Run(":80")
+	r.Run(":8080")
 }

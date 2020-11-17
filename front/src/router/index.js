@@ -56,7 +56,7 @@ const routes = [
     component: QuestionAdd
   },
   {
-    path: '/admin/question/edit',
+    path: '/admin/question/:id/edit',
     name: 'QuestionEdit',
     component: QuestionEdit
   },
