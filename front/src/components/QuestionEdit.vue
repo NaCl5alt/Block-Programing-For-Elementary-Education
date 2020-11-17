@@ -10,18 +10,18 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 export default {
   methods: {
     window: (onload = function () {
-      axios
-        .get(
-          "http://localhost:8080/admin/question/${this.$route.params['id']}/edit"
-        )
-        .then((response) => {})
-        .catch((err) => {
-          console.log(err);
-        });
+      // axios
+      //   .get(
+      //     "http://localhost:8080/admin/question/${this.$route.params['id']}/edit"
+      //   )
+      //   .then((response) => {})
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
     }),
   },
 };
