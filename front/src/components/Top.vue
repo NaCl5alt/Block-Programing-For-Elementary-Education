@@ -21,7 +21,6 @@ h1 {
             header="For Educations!"
             lead="Programming Beginner"
           ></b-jumbotron>
-          <!-- <h1>For Educations!</h1> -->
 
           <div>
             <p class="h2">開発用</p>
@@ -35,51 +34,6 @@ h1 {
             </b-list-group>
           </div>
         </b-col>
-
-        <!-- ログインフォーム -->
-        <!-- <b-col sm="5">
-          <div id="form-div">
-            <b-card bg-variant="light">
-              <h2>ログイン</h2>
-
-              <b-form v-on:submit.prevent="login">
-                <b-form-group
-                  label="ユーザID"
-                  label-cols-sm="4"
-                  description="未登録の方は新規登録をしてください。"
-                >
-                  <b-form-input
-                    v-model="user_id"
-                    type="text"
-                    name="user_id"
-                  ></b-form-input>
-                </b-form-group>
-
-                <b-form-group label="パスワード" label-cols-sm="4">
-                  <b-form-input
-                    v-model="password"
-                    type="password"
-                    name="password"
-                  ></b-form-input>
-                </b-form-group>
-
-                <b-row>
-                  <b-col></b-col>
-                  <b-col>
-                    <b-button pill type="submit" variant="outline-primary"
-                      >ログイン</b-button
-                    >
-                  </b-col>
-                  <b-col>
-                    <b-button pill type="reset" variant="outline-danger"
-                      >リセット</b-button
-                    >
-                  </b-col>
-                </b-row>
-              </b-form>
-            </b-card>
-          </div>
-        </b-col> -->
         <Login />
       </b-row>
     </b-container>
@@ -87,7 +41,6 @@ h1 {
 </template>
 
 <script>
-// import axios from "axios";
 import Login from "./Login.vue";
 export default {
   components: {
