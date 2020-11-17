@@ -37,7 +37,7 @@ h1 {
         </b-col>
 
         <!-- ログインフォーム -->
-        <b-col sm="5">
+        <!-- <b-col sm="5">
           <div id="form-div">
             <b-card bg-variant="light">
               <h2>ログイン</h2>
@@ -79,49 +79,19 @@ h1 {
               </b-form>
             </b-card>
           </div>
-        </b-col>
+        </b-col> -->
+        <Login />
       </b-row>
     </b-container>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
+import Login from "./Login.vue";
 export default {
-  data() {
-    return {
-      user_id: "",
-      password: "",
-    };
-  },
-  methods: {
-    async login() {
-      // クエリっぽいの作成
-      var params = new URLSearchParams();
-      params.append("userid", this.user_id);
-      params.append("password", this.password);
-
-      await axios
-        .post("/login", params, {})
-        .then((res) => {
-          // ログイン成功
-          // Cookieに保存
-          const token = res.data.token;
-          this.$cookie.set("token", token);
-          var path = "/question";
-          // if (this.$route.query.redirect) {
-          //   path = path + this.$route.query.redirect;
-          // }
-          console.log(path);
-          this.$router.push({ path: path });
-          this.$router.go();
-        })
-        .catch((error) => {
-          // ログイン失敗
-          // エラー処理
-          console.log(error);
-        });
-    },
+  components: {
+    Login,
   },
 };
 </script>
