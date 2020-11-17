@@ -69,12 +69,32 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
+
   data () {
     return {
+      adminlogin: 'false',
       userlogin: 'false',
-      adminlogin: 'false'
+      user_id: ""
     }
-  }
+  },
+  methods:{
+  verifyfunc () {
+  this.$nextTick(() => {
+    axios.post(process.env.VUE_APP_API_URL_BASE + 'token', {}, { withCredentials: true }).then(res => {
+      console.log('status: ' + res.status)
+      if (res.status === 200) {
+        this.verify = true
+      } else this.verify = false
+    }).catch(err => {
+      console.log(err)
+    })
+  })
+}
+},
+beforeMount () {
+  this.verifyfunc()
+}
 }
 </script>
