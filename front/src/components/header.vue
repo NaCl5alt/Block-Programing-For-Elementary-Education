@@ -86,7 +86,10 @@ export default {
       console.log('status: ' + res.status)
       if (res.status === 200) {
         this.verify = true
-      } else this.verify = false
+      }else if(res.status === 401){
+      axios.get('/login')
+      this.verifyfunc()
+      }else this.verify = false
     }).catch(err => {
       console.log(err)
     })
