@@ -11,7 +11,7 @@
 
     <div class="section1 text-right" style="float: right;">
 
-      <span v-if="userlogin==true&&adminlogin==false">
+      <span v-if="userlogin==true&&admin==false">
       <!--<b-button squared
       size="lg"
       variant="success"
@@ -27,7 +27,7 @@
       >ログアウト
       </b-button>
       </span>
-      <span v-else-if="adminlogin==true">
+      <span v-else-if="admin==true">
       <b-button squared
       size="lg"
       variant="success"
@@ -74,9 +74,10 @@ export default {
 
   data () {
     return {
-      adminlogin: 'false',
+      admin: 'false',
       userlogin: 'false',
-      user_id: ""
+      user_id: "",
+      token:""
     }
   },
   methods:{
@@ -94,10 +95,22 @@ export default {
       console.log(err)
     })
   })
-}
+},
+tokenget(){
+this.$nextTick(()=> {
+axios.get('/login',{}).then(res => {
+  console.log('status: ' + res.status)
+  if (res.status === 200) {
+    this.verify = true
+  }else this.verify = false
+}).catch(err => {
+  console.log(err)
+})
+})
 },
 beforeMount () {
   this.verifyfunc()
+}
 }
 }
 </script>
