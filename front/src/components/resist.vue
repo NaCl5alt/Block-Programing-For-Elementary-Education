@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data: function(){
     return {
@@ -25,7 +26,7 @@ export default {
   },
   methods: {
     regist () {
-      axios.post(process.env.VUE_APP_API_URL_BASE + 'user', {
+      axios.post('/api/user', {
         userid: this.userid,
         password: this.password
       }).then(res => {
@@ -35,15 +36,15 @@ export default {
         console.log(error)
       })
     },
-    click: function () {
+    click () {
       if (this.userid === '') {
         this.erroruserid = true
       }
       if (this.password === '') {
         this.errorpassword = true
       }
-      if (this.erroruserid = false, this.errorpassword = false) {
-        regist ()
+      if (this.erroruserid === false && this.errorpassword === false) {
+        this.regist()
       }
     }
   }
