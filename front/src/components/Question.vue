@@ -1,13 +1,19 @@
 <template>
   <div>
-    <b-jumbotron :header=datas.title :lead=datas.content>
+    <!-- <b-jumbotron> -->
+      <h1>{{ this.questionTitle }} <span id="qId">(id: {{ this.test }})</span></h1>
+      
+      <hr class="my-4">
+
+      <p>{{ datas.content }}</p>
+
       <ul>
         <b-button v-b-modal="'modal-1'">{{ hint }}</b-button>
         <b-modal id="modal-1" title="ヒント1">
           <p>{{ hint }}</p>
         </b-modal>
       </ul>
-    </b-jumbotron>
+    <!-- </b-jumbotron> -->
 
     <BlocklyComponent id="blockly1" :options="options" ref="foo"></BlocklyComponent>
     <p id="code">
@@ -56,6 +62,8 @@ export default {
   data() {
     return {
       code: "",
+      questionId: 0,
+      questionTitle: "",
       datas: {
         qid: 1,
         title: "TEST",
@@ -112,20 +120,29 @@ export default {
     };
   },
   methods: {
-    window: (onload = function () {
-      // axios.get("/question/${this.$route.params['id']}")
-      //   .then((response) => {
-      // })
-      // .catch((err) => {
-      // console.log(err);
-      // let path = "/question";
-      // this.$router.push({ path: path });
-      // this.$router.go();
-      // });
-    }),
+    window: (onload = function () {}),
+    // window: (onload = function () {
+    //   // axios.get("/question/${this.$route.params['id']}")
+    //   //   .then((response) => {
+    //   // })
+    //   // .catch((err) => {
+    //   // console.log(err);
+    //   // let path = "/question";
+    //   // this.$router.push({ path: path });
+    //   // this.$router.go();
+    //   // });
+    // }),
+    // mtFunc マウント時の処理
+    async mtFunc() {
+      this.test = this.$route.params["id"];
+    },
     showCode() {
       this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
     },
+  },
+  beforeMount() {
+    this.mtFunc();
+    this.questionTitle = this.datas["title"];
   },
 };
 </script>
@@ -152,5 +169,10 @@ body {
   bottom: 0;
   width: 50%;
   height: 50%;
+}
+
+#qId {
+  color: gray;
+  font-size: 50%;
 }
 </style>
