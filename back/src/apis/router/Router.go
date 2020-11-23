@@ -24,11 +24,9 @@ func SetRouter(db *gorm.DB) *gin.Engine {
 		api.POST("/user/password", ctrl.PasswordEdit)
 		api.GET("/token", ctrl.Refresh)
 		api.POST("/token", ctrl.TokenCheck)
-
-
+		question := controller.QuestionController{}
+		r.GET("/quetion", question.List)
 	}
-	question := controller.QuestionController{}
-	r.GET("/quetion", question.List)
 
 	return r
 }
