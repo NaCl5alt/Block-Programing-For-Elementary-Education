@@ -20,16 +20,30 @@ export default {
         userid: '',
         password: '',
         erroruserid: false,
-        errorpassword: false,
+        errorpassword: false
     }
   },
   methods: {
+    regist () {
+      axios.post(process.env.VUE_APP_API_URL_BASE + 'user', {
+        userid: this.userid,
+        password: this.password
+      }).then(res => {
+        this.$router.push({ path: '/login' })
+        console.log(res)
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     click: function () {
       if (this.userid === '') {
         this.erroruserid = true
       }
       if (this.password === '') {
         this.errorpassword = true
+      }
+      if (this.erroruserid = false, this.errorpassword = false) {
+        regist ()
       }
     }
   }
