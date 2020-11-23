@@ -11,7 +11,7 @@
 
     <div class="section1 text-right" style="float: right;">
 
-      <span v-if="userlogin==true&&admin==false">
+      <span v-if="userlogin==true && admin==false">
       <!--<b-button squared
       size="lg"
       variant="success"
@@ -74,10 +74,10 @@ export default {
 
   data () {
     return {
-      admin: 'false',
-      userlogin: 'false',
-      user_id: "",
-      token:""
+    userlogin: false,
+    user_id: "",
+    admin: false,
+    token:""
     }
   },
   methods:{
