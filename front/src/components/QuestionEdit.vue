@@ -23,7 +23,7 @@
           ></b-form-input>
         </b-form-group>
 
-        <b-form-group label="問題">
+        <b-form-group label="問題文">
           <b-form-textarea :placeholder="this.datas.content"></b-form-textarea>
         </b-form-group>
 
