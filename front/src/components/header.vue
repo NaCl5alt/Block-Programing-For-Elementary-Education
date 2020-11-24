@@ -11,7 +11,7 @@
 
     <div class="section1 text-right" style="float: right;">
 
-      <span v-if="userlogin==true && admin==false">
+      <span v-if='token!==null && admin!=="true"'>
       <!--<b-button squared
       size="lg"
       variant="success"
@@ -27,7 +27,7 @@
       >ログアウト
       </b-button>
       </span>
-      <span v-else-if="admin==true">
+      <span v-else-if='token!==null && admin == "true" '>
       <b-button squared
       size="lg"
       variant="success"
@@ -74,10 +74,8 @@ export default {
 
   data () {
     return {
-    userlogin: false,
-    user_id: "",
-    admin: false,
-    token:""
+    token:this.$cookies.get('token'),
+    admin:this.$cookies.get('admin')
     }
   },
   methods:{
@@ -88,8 +86,7 @@ export default {
       if (res.status === 200) {
         this.verify = true
       }else if(res.status === 401){
-      axios.get('/login')
-      this.verifyfunc()
+      this.tokenget()
       }else this.verify = false
     }).catch(err => {
       console.log(err)
@@ -98,10 +95,11 @@ export default {
 },
 tokenget(){
 this.$nextTick(()=> {
-axios.get('/login',{}).then(res => {
+axios.get('/api/login',{}).then(res => {
   console.log('status: ' + res.status)
   if (res.status === 200) {
-    this.verify = true
+    token = this.$cookies.get('token')
+    admin = this.$cookies.get('admin')
   }else this.verify = false
 }).catch(err => {
   console.log(err)
