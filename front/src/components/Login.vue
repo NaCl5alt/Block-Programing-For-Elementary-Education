@@ -75,6 +75,7 @@
 </style>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'Login',
   data (){
@@ -91,6 +92,17 @@ export default {
       if(this.password=='') this.misspassword = true
       console.log(this.user_id)
       console.log(this.password)
+      if(this.missuserid==false &&this.misspassword==false){
+        axios.post('/api/login',{
+          user_id: this.user_id,
+          password: this.password
+        }).then(res => {
+          console.log(res.data)
+        }).catch(error => {
+          console.log(error)
+        })
+      }
+    
     }
   }
 }
