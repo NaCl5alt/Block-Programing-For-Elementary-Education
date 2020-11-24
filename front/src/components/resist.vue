@@ -5,6 +5,7 @@
           <h5>新規登録</h5>
           <p><b-form-input type="text" v-model="userid" placeholder="ユーザid"/></p>
           <p v-show="erroruserid"><font color="red">ユーザidを入力してください</font></p>
+          <p v-show="erroruserid_used"><font color="red">このユーザidは使用されています</font></p>
           <p><b-form-input type="password" v-model="password" placeholder="パスワード"/></p>
           <p v-show="errorpassword"><font color="red">パスワードを入力してください</font></p>
           <b-button block variant="primary" @click="click">新規登録</b-button>
@@ -21,12 +22,13 @@ export default {
         userid: '',
         password: '',
         erroruserid: false,
+        erroruserid_used: false,
         errorpassword: false
     }
   },
   methods: {
     regist () {
-      axios.post("/api/user", {
+      axios.post('/api/user', {
         userid: this.userid,
         password: this.password
       }).then(res => {
@@ -37,14 +39,30 @@ export default {
       })
     },
     click () {
-      if (this.userid === '') {
-        this.erroruserid = true
+      if (this.userid === true) {
+        this.erroruserid = false
+        this.erroruserid_used = true
       }
-      if (this.password === '') {
+      if (this.userid !== '' && this.password !== '') {
+        this.erroruserid_used = false
+        this.erroruserid = false
+        this.errorpassword = false
+        this.regist()
+      }
+      else if (this.userid === '' && this.password === '') {
+        this.erroruserid_used = false
+        this.erroruserid = true
         this.errorpassword = true
       }
-      if (this.erroruserid === false && this.errorpassword === false) {
-        this.regist()
+      else if (this.userid === '') {
+        this.erroruserid_used = false
+        this.erroruserid = true
+        this.errorpassword = false
+      }
+      else if (this.password === '') {
+        this.erroruserid_used = false
+        this.erroruserid = false
+        this.errorpassword = true
       }
     }
   }
