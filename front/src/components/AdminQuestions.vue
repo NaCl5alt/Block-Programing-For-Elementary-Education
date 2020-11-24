@@ -3,7 +3,7 @@
 
 <template>
   <div>
-    <b-container fluid>
+    <b-container>
       <h1>問題管理ページ</h1>
       <ul>
         <li><a href="/admin/question/1/edit">テスト(id=1)</a></li>
