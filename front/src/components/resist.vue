@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     regist () {
-      axios.post('/api/user', {
+      axios.post("/api/user", {
         userid: this.userid,
         password: this.password
       }).then(res => {
