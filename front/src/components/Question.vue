@@ -52,7 +52,7 @@ import "../blocks/stocks";
 import "../prompt";
 
 import BlocklyJS from "blockly/javascript";
-import axios from "axios";
+import Axios from "axios";
 
 export default {
   name: "Question",
@@ -130,8 +130,7 @@ export default {
     async mtFunc() {
       this.mainData.id = this.$route.params["id"];
 
-      axios
-        .get("/api/question/$(this.questionId)")
+      Axios.get("/api/question/$(this.questionId)")
         .then((res) => {
           this.mainData.title = res.data["title"];
           this.mainData.content = res.data["qid"];
