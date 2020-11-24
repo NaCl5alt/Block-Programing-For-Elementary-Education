@@ -1,11 +1,11 @@
 <template>
   <div>
     <!-- <b-jumbotron> -->
-      <h1>{{ this.questionTitle }} <span id="qId">(id: {{ this.test }})</span></h1>
+      <h1>{{ this.mainData["title"] }} <span id="qId">(id: {{ this.mainData.id }})</span></h1>
       
       <hr class="my-4">
 
-      <p>{{ datas.content }}</p>
+      <p>{{ this.mainData["content"] }}</p>
 
       <ul>
         <b-button v-b-modal="'modal-1'">{{ hint }}</b-button>
@@ -52,7 +52,7 @@ import "../blocks/stocks";
 import "../prompt";
 
 import BlocklyJS from "blockly/javascript";
-// import axios from "axios";
+import Axios from "axios";
 
 export default {
   name: "Question",
@@ -64,6 +64,12 @@ export default {
       code: "",
       questionId: 0,
       questionTitle: "",
+      mainData: {
+        id: 0,
+        title: "",
+        content: "",
+        hints: [],
+      },
       datas: {
         qid: 1,
         title: "TEST",
@@ -120,21 +126,19 @@ export default {
     };
   },
   methods: {
-    window: (onload = function () {}),
-    // window: (onload = function () {
-    //   // axios.get("/question/${this.$route.params['id']}")
-    //   //   .then((response) => {
-    //   // })
-    //   // .catch((err) => {
-    //   // console.log(err);
-    //   // let path = "/question";
-    //   // this.$router.push({ path: path });
-    //   // this.$router.go();
-    //   // });
-    // }),
     // mtFunc マウント時の処理
     async mtFunc() {
-      this.test = this.$route.params["id"];
+      this.mainData.id = this.$route.params["id"];
+
+      Axios.get("/api/question/$(this.questionId)")
+        .then((res) => {
+          this.mainData.title = res.data["title"];
+          this.mainData.content = res.data["qid"];
+          this.mainData.hints = res.data["hints"];
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     showCode() {
       this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
@@ -142,7 +146,7 @@ export default {
   },
   beforeMount() {
     this.mtFunc();
-    this.questionTitle = this.datas["title"];
+    // this.questionTitle = this.datas["title"];
   },
 };
 </script>

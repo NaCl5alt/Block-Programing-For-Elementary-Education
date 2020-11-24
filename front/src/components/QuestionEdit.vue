@@ -23,7 +23,7 @@
           ></b-form-input>
         </b-form-group>
 
-        <b-form-group label="問題">
+        <b-form-group label="問題文">
           <b-form-textarea :placeholder="this.datas.content"></b-form-textarea>
         </b-form-group>
 
@@ -44,7 +44,8 @@
 </template>
 
 <script>
-// import axios from "axios";
+import Axios from "axios";
+
 export default {
   data() {
     return {
@@ -52,6 +53,7 @@ export default {
       title: "test",
       content: "",
       answer: "",
+      hints: [],
       datas: {
         qid: 1,
         title: "TEST",
@@ -59,31 +61,26 @@ export default {
         hints: [{ hint: "HINT1" }, { hint: "HINT2" }],
       },
       hintCount: 0,
-      hints: [],
       selectHintId: 0,
     };
   },
   methods: {
-    window: (onload = function () {
-      // ここ修正
-      // this.id = this.$route.params["id"];
-      // console.log(this.$route.params);
-      // axios
-      //   .get("http://localhost/question/${this.$route.params['id']}/detail")
-      //   .then((response) => {
-      //     this.title = response.title;
-      //     this.content = response.content;
-      //     this.answer = response.answer;
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
-    }),
+    mtFunc() {
+      this.id = this.$route.params["id"];
+      this.hintCount = this.datas["hints"].length;
+
+      Axios.get("/api/question/$(this.id)").then((res) => {
+        for (let i = 0; i < res.data.hints.length; i++) {
+          this.hints = this.hints.push({
+            id: i,
+            data: res.data.hints[i].hint,
+          });
+        }
+      });
+    },
   },
   beforeMount() {
-    this.id = this.$route.params["id"];
-    this.hintCount = this.datas["hints"].length;
-    this.hints = this.datas["hints"];
+    this.mtFunc();
   },
 };
 </script>
