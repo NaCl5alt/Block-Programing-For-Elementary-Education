@@ -126,18 +126,6 @@ export default {
     };
   },
   methods: {
-    window: (onload = function () {}),
-    // window: (onload = function () {
-    //   // axios.get("/api/question/${this.$route.params['id']}")
-    //   //   .then((response) => {
-    //   // })
-    //   // .catch((err) => {
-    //   // console.log(err);
-    //   // let path = "/question";
-    //   // this.$router.push({ path: path });
-    //   // this.$router.go();
-    //   // });
-    // }),
     // mtFunc マウント時の処理
     async mtFunc() {
       this.mainData.id = this.$route.params["id"];
