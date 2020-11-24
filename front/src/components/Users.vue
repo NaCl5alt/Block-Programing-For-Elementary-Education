@@ -3,7 +3,7 @@
 
 <template>
   <div>
-    <b-container fluid>
+    <b-container>
       <h1>ユーザ一覧</h1>
     </b-container>
   </div>
