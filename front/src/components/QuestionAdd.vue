@@ -2,64 +2,118 @@
   <div>
     <b-container>
       <h1>問題追加</h1>
-      <b-form>
-        <b-form-group
-          label="タイトル"
-          description="問題の内容を把握しやすいように命名しましょう。"
+      <div>
+        <b-row>
+          <b-col sm="3">
+            <label for="title">タイトル: </label>
+          </b-col>
+          <b-col sm="9">
+            <b-form-input
+              v-model="title"
+              type="text"
+              name="title"
+              placeholder="※ 問題の内容を把握しやすいように命名しましょう。"
+              required
+            ></b-form-input>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col sm="3">
+            <label for="question">問題文: </label>
+          </b-col>
+          <b-col sm="9">
+            <b-form-textarea
+              v-model="question"
+              name="question"
+              placeholder=""
+              required
+            ></b-form-textarea>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col sm="3">
+            <label for="answer">答え: </label>
+          </b-col>
+          <b-col sm="9">
+            <b-form-input
+              v-model="answer"
+              name="answer"
+              type="text"
+              required
+            ></b-form-input>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col sm="3">
+            <label for="hint">ヒント</label>
+          </b-col>
+          <b-col sm="9">
+            <!-- ToDoっぽい感じで追加する -->
+            <div>
+              <b-row>
+                <b-col>
+                  <b-form-input
+                    v-model="hint_val"
+                    name="hint"
+                    type="text"
+                  ></b-form-input>
+                </b-col>
+                <b-col>
+                  <b-button variant="success" v-on:click="addHint">
+                    <!-- <b-icon icon="plus"></b-icon> -->
+                    +
+                  </b-button>
+                </b-col>
+              </b-row>
+            </div>
+            <div>
+              <b-list-group>
+                <b-row v-for="h in hints" v-bind:key="h.id">
+                  <b-col sm="8">
+                    <b-list-group-item>
+                      {{ h.id }}:{{ h.hint }}
+                    </b-list-group-item>
+                  </b-col>
+                  <b-col sm="2">
+                    <b-button variant="danger"> - </b-button>
+                  </b-col>
+                </b-row>
+              </b-list-group>
+            </div>
+          </b-col>
+        </b-row>
+
+        <b-button pill variant="outline-primary" style="float: right"
+          >問題を登録</b-button
         >
-          <b-form-input type="text" required></b-form-input>
-        </b-form-group>
-
-        <b-form-group label="問題">
-          <b-form-input type="text" required></b-form-input>
-        </b-form-group>
-
-        <b-form-group label="答え" description="">
-          <b-form-input type="text" required></b-form-input>
-        </b-form-group>
-
-        <b-form-group label="ヒント" description="">
-          <b-form-input type="text" required></b-form-input>
-        </b-form-group>
-
-        <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
-      </b-form>
-    </b-container>
-
-    <!-- <b-form>
-      <b-form-group
-        label="タイトル"
-        description="問題の内容を把握しやすいように命名しましょう。"
-      >
-        <b-form-input type="text" required></b-form-input>
-      </b-form-group>
-
-      <div id="app-2">
-        <input type="text" v-model="message" />
-        <div class="error" v-if="error.require">必須項目です。</div>
-        <div class="error" v-if="error.tooLong">長すぎます。</div>
       </div>
-
-      <b-form-group label="問題">
-        <b-form-input type="text" required></b-form-input>
-      </b-form-group>
-
-      <b-form-group label="答え" description="">
-        <b-form-input type="text" required></b-form-input>
-      </b-form-group>
-
-      <b-form-group label="ヒント" description="">
-        <b-form-input type="text" required></b-form-input>
-      </b-form-group>
-      <b-button type="submit" variant="primary">Submit</b-button>
-      <b-button type="reset" variant="danger">Reset</b-button>
-    </b-form> -->
+    </b-container>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      title: "",
+      question: "",
+      answer: "",
+      hints: [],
+      hint_val: "",
+      hintCount: 0,
+    };
+  },
+  methods: {
+    addHint() {
+      this.hintCount = this.hints.length;
+      this.hints.push({ id: this.hintCount, hint: this.hint_val });
+      this.hintCount = 0;
+      this.hint_val = "";
+    },
+    deleteHint() {},
+    addQuestion() {},
+  },
+};
 </script>
 
 <style scoped>
