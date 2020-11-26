@@ -71,7 +71,7 @@
                 <b-row v-for="h in hints" v-bind:key="h.id">
                   <b-col sm="8">
                     <b-list-group-item>
-                      {{ h.id }}:{{ h.hint }}
+                      {{ h.hint }}
                     </b-list-group-item>
                   </b-col>
                   <b-col sm="2">
@@ -94,6 +94,7 @@
 </template>
 
 <script>
+import Axios from "axios";
 export default {
   data() {
     return {
@@ -107,22 +108,46 @@ export default {
   },
   methods: {
     addHint() {
+      // ヒントを追加
       this.hintCount = this.hints.length;
       this.hints.push({ id: this.hintCount, hint: this.hint_val });
       this.hintCount = 0;
       this.hint_val = "";
     },
     deleteHint(id) {
+      // ヒントを削除 & idの調整
       this.hints.splice(id, 1);
       for (let i = 0; i < this.hints.length; i++) {
         this.hints[i].id = i;
       }
     },
     addQuestion() {
+      // postHints POST用のヒント達
       var postHints = [];
+      // hintsの整形
       this.hints.forEach((hint) => {
         postHints.push({ hint: hint.hint });
       });
+
+      Axios.post("/api/question", {
+        title: this.title,
+        content: this.question,
+        answer: this.answer,
+        hints: postHints,
+      })
+        .then((res) => {
+          if (res.status == 201) {
+            console.log("追加完了");
+            this.router.push({ path: "/admin/question" });
+          } else if (res.status == 400) {
+            console.log("リクエスト無効");
+          } else {
+            console.log("トークンが無効");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
