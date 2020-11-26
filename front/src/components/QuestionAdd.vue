@@ -75,7 +75,9 @@
                     </b-list-group-item>
                   </b-col>
                   <b-col sm="2">
-                    <b-button variant="danger"> - </b-button>
+                    <b-button variant="danger" v-on:click="deleteHint(h.id)">
+                      -
+                    </b-button>
                   </b-col>
                 </b-row>
               </b-list-group>
@@ -110,8 +112,18 @@ export default {
       this.hintCount = 0;
       this.hint_val = "";
     },
-    deleteHint() {},
-    addQuestion() {},
+    deleteHint(id) {
+      this.hints.splice(id, 1);
+      for (let i = 0; i < this.hints.length; i++) {
+        this.hints[i].id = i;
+      }
+    },
+    addQuestion() {
+      var postHints = [];
+      this.hints.forEach((hint) => {
+        postHints.push({ hint: hint.hint });
+      });
+    },
   },
 };
 </script>
