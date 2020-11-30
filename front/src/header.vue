@@ -84,12 +84,9 @@ export default {
     axios.post(process.env.VUE_APP_API_URL_BASE + 'token', {}, { withCredentials: true }).then(res => {
       console.log('status: ' + res.status)
       if (res.status === 200) {
-        this.token = this.$cookies.get('token')
-        this.$cookies.get('admin')
+      
         this.verify = true
       }else if(res.status === 401){
-        this.token = this.$cookies.get('token')
-        this.$cookies.get('admin')
       this.tokenget()
       }else this.verify = false
     }).catch(err => {
@@ -99,11 +96,11 @@ export default {
 },
 tokenget(){
 this.$nextTick(()=> {
-axios.get('/api/token',{}).then(res => {
+axios.get('/api/login',{}).then(res => {
   console.log('status: ' + res.status)
   if (res.status === 200) {
-    this.token = this.$cookies.get('token')
-    this.$cookies.get('admin')
+    token = this.$cookies.get('token')
+    admin = this.$cookies.get('admin')
   }else this.verify = false
 }).catch(err => {
   console.log(err)
