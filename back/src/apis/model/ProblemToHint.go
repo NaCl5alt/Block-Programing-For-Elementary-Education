@@ -4,8 +4,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type Problem struct {
+type Problems struct {
 	gorm.Model
-	Hint_To_ID     int    `json:"hinttoid"`
-	Hint_ID      int    `json:"hintid"`
+	Hint_To_ID int `json:"hinttoid"`
+	Hint_ID    int `json:"hintid"`
 }
