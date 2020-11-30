@@ -30,6 +30,9 @@ h1 {
               <b-list-group-item to="/question"
                 >問題一覧画面へ</b-list-group-item
               >
+              <b-list-group-item to="/question/1"
+                >問題画面へ(id=1)</b-list-group-item
+              >
               <b-list-group-item to="/admin">管理者画面へ</b-list-group-item>
             </b-list-group>
           </div>
@@ -41,10 +44,32 @@ h1 {
 </template>
 
 <script>
+import Axios from "axios";
 import Login from "./Login.vue";
 export default {
   components: {
     Login,
+  },
+  methods: {
+    tokenCheck() {
+      Axios.post("/api/token").then((res) => {
+        switch (res.status) {
+          case 200:
+            this.$router.push({ path: "/question" });
+            this.$router.go();
+            break;
+
+          default:
+            this.$cookies.remove("token"); // トークンを削除して
+            this.$router.push({ path: "/" });
+            this.$router.go(); // リダイレクト
+            break;
+        }
+      });
+    },
+  },
+  beforeMount() {
+    this.tokenCheck();
   },
 };
 </script>

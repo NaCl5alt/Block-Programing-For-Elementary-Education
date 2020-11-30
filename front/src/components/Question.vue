@@ -1,13 +1,19 @@
 <template>
   <div>
-    <b-jumbotron :header=datas.title :lead=datas.content>
+    <!-- <b-jumbotron> -->
+      <h1>{{ this.mainData["title"] }} <span id="qId">(id: {{ this.mainData.id }})</span></h1>
+      
+      <hr class="my-4">
+
+      <p>{{ this.mainData["content"] }}</p>
+
       <ul>
         <b-button v-b-modal="'modal-1'">{{ hint }}</b-button>
         <b-modal id="modal-1" title="ヒント1">
           <p>{{ hint }}</p>
         </b-modal>
       </ul>
-    </b-jumbotron>
+    <!-- </b-jumbotron> -->
 
     <BlocklyComponent id="blockly1" :options="options" ref="foo"></BlocklyComponent>
     <p id="code">
@@ -46,7 +52,7 @@ import "../blocks/stocks";
 import "../prompt";
 
 import BlocklyJS from "blockly/javascript";
-// import axios from "axios";
+import Axios from "axios";
 
 export default {
   name: "Question",
@@ -56,6 +62,14 @@ export default {
   data() {
     return {
       code: "",
+      questionId: 0,
+      questionTitle: "",
+      mainData: {
+        id: 0,
+        title: "",
+        content: "",
+        hints: [],
+      },
       datas: {
         qid: 1,
         title: "TEST",
@@ -112,20 +126,27 @@ export default {
     };
   },
   methods: {
-    window: (onload = function () {
-      // axios.get("/question/${this.$route.params['id']}")
-      //   .then((response) => {
-      // })
-      // .catch((err) => {
-      // console.log(err);
-      // let path = "/question";
-      // this.$router.push({ path: path });
-      // this.$router.go();
-      // });
-    }),
+    // mtFunc マウント時の処理
+    async mtFunc() {
+      this.mainData.id = this.$route.params["id"];
+
+      Axios.get("/api/question/$(this.questionId)")
+        .then((res) => {
+          this.mainData.title = res.data["title"];
+          this.mainData.content = res.data["qid"];
+          this.mainData.hints = res.data["hints"];
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     showCode() {
       this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
     },
+  },
+  beforeMount() {
+    this.mtFunc();
+    // this.questionTitle = this.datas["title"];
   },
 };
 </script>
@@ -152,5 +173,10 @@ body {
   bottom: 0;
   width: 50%;
   height: 50%;
+}
+
+#qId {
+  color: gray;
+  font-size: 50%;
 }
 </style>

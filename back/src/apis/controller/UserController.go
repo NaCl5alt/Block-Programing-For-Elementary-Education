@@ -21,6 +21,14 @@ type LoginResponse struct {
 	Admin bool   `json:"admin"`
 }
 
+type CheckResponse struct {
+	Exist bool `json:"exist"`
+}
+
+type RefreshResponse struct {
+	Token string `json:"token"`
+}
+
 func (pc UserController) List(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
@@ -142,10 +150,6 @@ func (pc UserController) Edit(c *gin.Context) {
 }
 
 func (pc UserController) Check(c *gin.Context) {
-	type CheckResponse struct {
-		Exist bool `json:"exist"`
-	}
-
 	db := db.GormConnect()
 	user := model.User{}
 
@@ -226,9 +230,6 @@ func (pc UserController) PasswordEdit(c *gin.Context) {
 }
 
 func (pc UserController) Refresh(c *gin.Context) {
-	type RefreshResponse struct {
-		Token string `json:"token"`
-	}
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
