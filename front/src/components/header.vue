@@ -81,17 +81,18 @@ export default {
   methods:{
   verifyfunc () {
   this.$nextTick(() => {
-    axios.post(process.env.VUE_APP_API_URL_BASE + 'token', {}, { withCredentials: true }).then(res => {
+    axios.post('/api/token', { withCredentials: true }).then(res => {
       console.log('status: ' + res.status)
       if (res.status === 200) {
-        this.token = this.$cookies.get('token')
-        this.$cookies.get('admin')
         this.verify = true
       }else if(res.status === 401){
-        this.token = this.$cookies.get('token')
-        this.$cookies.get('admin')
-      this.tokenget()
-      }else this.verify = false
+        this.verify = false
+        this.tokenget()
+      }else {
+        this.verify = false
+        this.$cookies.remove('token')
+        this.$cookies.remove('admin')
+        }
     }).catch(err => {
       console.log(err)
     })
@@ -99,11 +100,14 @@ export default {
 },
 tokenget(){
 this.$nextTick(()=> {
-axios.get('/api/token',{}).then(res => {
+axios.get('/api/token', { withCredentials: true }).then(res => {
   console.log('status: ' + res.status)
   if (res.status === 200) {
-    this.token = this.$cookies.get('token')
-    this.$cookies.get('admin')
+        this.$cookies.remove('token')
+        this.$cookies.remove('admin')
+        this.$cookies.set('token', res.data.token)
+        this.$cookies.set('admin', res.data.admin)
+        this.verify = true
   }else this.verify = false
 }).catch(err => {
   console.log(err)
