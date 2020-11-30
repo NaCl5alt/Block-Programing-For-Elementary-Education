@@ -12,16 +12,21 @@ func SetRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
 	ctrl := controller.UserController{}
-	r.GET("/user", ctrl.List)
-	r.POST("/user", ctrl.Create)
-	r.POST("/login", ctrl.Login)
-	r.DELETE("/user", ctrl.Delete)
-	r.POST("/user/edit", ctrl.Edit)
-	r.POST("/user/check", ctrl.Check)
-	r.POST("/user/id", ctrl.IdEdit)
-	r.POST("/user/password", ctrl.PasswordEdit)
-	r.GET("/token", ctrl.Refresh)
-	r.POST("/token", ctrl.TokenCheck)
+	api := r.Group("/api")
+	{
+		api.GET("/user", ctrl.List)
+		api.POST("/user", ctrl.Create)
+		api.POST("/login", ctrl.Login)
+		api.DELETE("/user", ctrl.Delete)
+		api.POST("/user/edit", ctrl.Edit)
+		api.POST("/user/check", ctrl.Check)
+		api.POST("/user/id", ctrl.IdEdit)
+		api.POST("/user/password", ctrl.PasswordEdit)
+		api.GET("/token", ctrl.Refresh)
+		api.POST("/token", ctrl.TokenCheck)
+		question := controller.QuestionController{}
+		r.GET("/quetion", question.List)
+	}
 
 	return r
 }
