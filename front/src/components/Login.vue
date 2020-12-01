@@ -25,8 +25,8 @@
                   ></b-form-input>
                 </b-form-group>
                 
-                <p v-if=missuserid class="miss">
-                ユーザIDが違います。
+                <p v-if=nulluserid class="miss">
+                ユーザIDを入力してください。
                 </p>
                 
 
@@ -38,11 +38,12 @@
                   ></b-form-input>
                 </b-form-group>
                 
-                <p v-if=misspassword class="miss">
-                パスワードが違います。
+                <p v-if=nullpassword class="miss">
+                パスワードを入力してください。
                 </p>
-                
-
+                <p v-if="misspassword" class="miss">
+                パスワードが間違っています。
+                </p>
                 <b-row>
                   <b-col></b-col>
                   <b-col>
@@ -83,16 +84,14 @@ export default {
       user_id:'',
       password:'',
       missuserid: false,
-      misspassword: false
+      misspassword: false,
+      nulluserid: false,
+      nullpassword: false
     }
   },
   methods:{
     login(){
-      if(this.user_id=='') this.missuserid = true
-      if(this.password=='') this.misspassword = true
-      console.log(this.user_id)
-      console.log(this.password)
-      if(this.missuserid==false && this.misspassword==false){
+      if(this.user_id!='' && this.password!='') {
         axios.post('/api/login',{
           userid: this.user_id,
           password: this.password
@@ -107,8 +106,26 @@ export default {
         }).catch(error => {
           console.log(error)
         })
+      } else {
+        if(this.userid==""&&this.password==""){
+          this.nulluserid = true
+          this.nullpassword = true
+        }else{
+          if(this.userid==""){
+            this.nulluserid = true 
+          }else{ 
+            if(this.password==''){
+              this.nullpassword = true
+            }else{
+              console.log(this.user_id)
+              console.log(this.password)
+
+              //if(this.nulluserid==false && this.nullpassword==false){
+              //}
+            }
+          }
+        }
       }
-    
     }
   }
 }
