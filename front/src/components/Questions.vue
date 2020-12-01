@@ -1,29 +1,39 @@
 <template>
   <div>
     <b-container>
-      <h2>問題一覧</h2>
+      <h2>
+        問題一覧
+        <span style="font-size: 50%; color: gray"
+          >(問題数: {{ end }}/{{ max }})</span
+        >
+      </h2>
       <div>
-        <b-table-simple striped hover>
-          <b-head>
+        <b-table-simple hover>
+          <colgroup style="width: 20%"></colgroup>
+          <colgroup style="width: 50%"></colgroup>
+          <colgroup style="width: 20%"></colgroup>
+          <b-thead head-variant="light">
             <b-tr>
-              <b-th>No.</b-th>
-              <b-th>問題名</b-th>
-              <b-th>進捗</b-th>
+              <b-th class="text-center">No.</b-th>
+              <b-th class="text-center">問題名</b-th>
+              <b-th class="text-center"></b-th>
             </b-tr>
-          </b-head>
+          </b-thead>
           <b-tbody>
             <b-tr v-for="q in questions" :key="q.id">
-              <b-td>{{ q.id }}</b-td>
-              <b-td>{{ q.title }}</b-td>
-              <b-td>{{ q.progress }}</b-td>
+              <b-td class="text-right" v-if="q.progress" variant="success">{{
+                q.id
+              }}</b-td>
+              <b-td class="text-right" v-else>{{ q.id }}</b-td
+              ><b-td class="text-right" v-if="q.progress" variant="success">{{
+                q.title
+              }}</b-td>
+              <b-td class="text-right" v-else>{{ q.title }}</b-td>
+              <b-td>
+                <b-button href="/question/1">トライ!</b-button>
+              </b-td>
             </b-tr>
           </b-tbody>
-
-          <!-- <b-tfoot>
-            <b-tr variant="secondary" class="text-right">
-              問題数: <b>{{ max }}</b>
-            </b-tr>
-          </b-tfoot> -->
         </b-table-simple>
         <!-- <div class="row">
           <div class="col">No.</div>
@@ -65,6 +75,8 @@ export default {
   methods: {
     async infiniteHandler($state) {
       if (this.end === 0) await this.firstQuestion();
+      console.log(this.end);
+      console.log(this.max);
       if (this.end >= this.max) {
         $state.complete();
       } else {
@@ -73,36 +85,68 @@ export default {
       }
     },
     async getCount() {
-      Axios.get("/question/count")
+      await Axios.get("/question/count")
         .then((res) => {
           this.max = res.data["count"];
         })
         .catch((error) => {
           console.log(error);
-          this.max = 20;
+          this.max = 10;
         });
     },
     async firstQuestion() {
-      this.questions.push({
-        id: 1,
-        title: "Title",
-        progress: false,
-      });
+      await Axios.get("/api/question")
+        .then((res) => {
+          this.questions = this.questions.concat(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+          this.questions = this.questions.concat({
+            id: 1,
+            title: "[TEST] Title",
+            progress: false,
+          });
+        });
       this.end = this.questions.length;
       console.log(this.questions);
     },
     async getQuestions() {
-      this.questions = this.questions.concat({
-        id: 2,
-        title: "Title",
-        progress: true,
-      });
+      await Axios.get("/api/question/paging", {
+        qid: this.end,
+      })
+        .then((res) => {
+          this.questions = this.questions.concat(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+          for (let i = this.end + 1; i <= this.end + 50; i++) {
+            if (i <= this.max) {
+              this.questions = this.questions.concat({
+                id: i,
+                title: "[TEST] Title",
+                progress: true,
+              });
+            }
+          }
+        });
+
+      // this.questions.sort(function (a, b) {
+      //   if (a.id > b.id) {
+      //     return 1;
+      //   } else {
+      //     return -1;
+      //   }
+      // });
       this.end = this.questions.length;
       console.log(this.questions);
     },
   },
+
   beforeMount() {
     this.getCount();
   },
 };
 </script>
+
+<style scoped>
+</style>
