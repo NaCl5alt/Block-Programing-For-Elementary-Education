@@ -1,25 +1,34 @@
 <template>
   <div>
-    <!-- <b-jumbotron> -->
-      <h1>{{ this.mainData["title"] }} <span id="qId">(id: {{ this.mainData.id }})</span></h1>
+    <b-container>
+      <h2>{{ questionTitle }} <span style="color: gray; font-size: 50%;">(id: {{ questionId }})</span></h2>
       
       <hr class="my-4">
 
-      <p>{{ this.mainData["content"] }}</p>
+      <p>{{ questionContent }}</p>
 
-      <ul>
-        <b-button v-b-modal="'modal-1'">{{ hint }}</b-button>
-        <b-modal id="modal-1" title="ヒント1">
-          <p>{{ hint }}</p>
-        </b-modal>
-      </ul>
-    <!-- </b-jumbotron> -->
+      <div role="hintlist">
+        <ul style="list-style: none;">
+          <div v-for="h in questionsHints" :key="h.id">
+            <li style="float: left; margin: 10px;">
+              <b-button pill v-b-toggle.collapse variant="info" @click="showHint(h.id)">{{ h.title }}</b-button>
+            </li>
+          </div>
+        </ul>
+        <p><br><br></p>
+        <div>
+          <b-collapse id="collapse" v-model="visible">
+            <b-card>{{ visibleHint }}</b-card>
+          </b-collapse>
+        </div>
+      </div>
 
-    <BlocklyComponent id="blockly1" :options="options" ref="foo"></BlocklyComponent>
-    <p id="code">
-      <button v-on:click="showCode()">Show JavaScript</button>
-      <pre v-html="code"></pre>
-    </p>
+      <BlocklyComponent id="blockly1" :options="options" ref="foo"></BlocklyComponent>
+      <p id="code">
+        <button v-on:click="showCode()">Show JavaScript</button>
+        <pre v-html="code"></pre>
+      </p>
+    </b-container>
   </div>
 </template>
 
@@ -64,18 +73,11 @@ export default {
       code: "",
       questionId: 0,
       questionTitle: "",
-      mainData: {
-        id: 0,
-        title: "",
-        content: "",
-        hints: [],
-      },
-      datas: {
-        qid: 1,
-        title: "TEST",
-        content: "ASADKSJFNJKDNFKJAN",
-        hints: [{ hint: "HINT1" }, { hint: "HINT2" }],
-      },
+      questionContent: "",
+      questionsHints: [],
+      visibleId: 0,
+      visibleHint: "",
+      visible: false,
       options: {
         media: "media/",
         grid: {
@@ -128,17 +130,66 @@ export default {
   methods: {
     // mtFunc マウント時の処理
     async mtFunc() {
-      this.mainData.id = this.$route.params["id"];
+      this.questionId = this.$route.params["id"];
 
       Axios.get("/api/question/$(this.questionId)")
         .then((res) => {
-          this.mainData.title = res.data["title"];
-          this.mainData.content = res.data["qid"];
-          this.mainData.hints = res.data["hints"];
+          var bufHints = [];
+          var bufStr0 = "";
+          var bufStr1 = "";
+          this.questionTitle = res.data["title"];
+          this.questionContent = res.data["content"];
+          for (let i = 0; i < res.data["hints"].length; i++) {
+            bufStr0 = "collapse-" + i;
+            bufStr1 = "ヒント " + i;
+            bufHints.push({
+              id: i,
+              collapseId: bufStr0,
+              title: bufStr1,
+              hints: res.data["hint"][i],
+            });
+          }
+          if (res.data["hints"][0] == null) {
+            this.visibleHint = "空";
+          } else {
+            this.visibleHint = res.data["hints"][0];
+          }
+          this.questionsHints = bufHints;
         })
         .catch((error) => {
+          this.questionTitle = "[ERROR] ページが存在しません。";
+          this.questionContent = "[ERROR]";
+          this.questionsHints = [
+            {
+              id: 0,
+              collapseId: "collapse-0",
+              title: "ヒント 0",
+              hint: "[ERROR]",
+            },
+            {
+              id: 1,
+              collapseId: "collapse-1",
+              title: "ヒント 1",
+              hint: "[ERROR]",
+            },
+          ];
           console.log(error);
         });
+    },
+    showHint(questionId) {
+      Axios.get("/api/question/$(this.questionId)")
+        .then((res) => {
+          this.visibleHint = res.data["hints"][questionId];
+        })
+        .catch((error) => {
+          this.visibleHint = "[ERROR] " + questionId;
+          console.log(error);
+        });
+      if (questionId != this.visibleId) {
+        this.visibleId = !this.visibleId;
+      } else {
+        this.visibleId = true;
+      }
     },
     showCode() {
       this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
@@ -146,7 +197,6 @@ export default {
   },
   beforeMount() {
     this.mtFunc();
-    // this.questionTitle = this.datas["title"];
   },
 };
 </script>
@@ -173,10 +223,5 @@ body {
   bottom: 0;
   width: 50%;
   height: 50%;
-}
-
-#qId {
-  color: gray;
-  font-size: 50%;
 }
 </style>

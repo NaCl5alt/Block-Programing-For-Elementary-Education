@@ -1,73 +1,152 @@
 <template>
   <div>
-    <h2>問題一覧</h2>
-    <div class="row">
-      <div class="col">
-        No.
+    <b-container>
+      <h2>
+        問題一覧
+        <span style="font-size: 50%; color: gray"
+          >(問題数: {{ end }}/{{ max }})</span
+        >
+      </h2>
+      <div>
+        <b-table-simple hover>
+          <colgroup style="width: 20%"></colgroup>
+          <colgroup style="width: 50%"></colgroup>
+          <colgroup style="width: 20%"></colgroup>
+          <b-thead head-variant="light">
+            <b-tr>
+              <b-th class="text-center">No.</b-th>
+              <b-th class="text-center">問題名</b-th>
+              <b-th class="text-center"></b-th>
+            </b-tr>
+          </b-thead>
+          <b-tbody>
+            <b-tr v-for="q in questions" :key="q.id">
+              <b-td class="text-right" v-if="q.progress" variant="success">{{
+                q.id
+              }}</b-td>
+              <b-td class="text-right" v-else>{{ q.id }}</b-td
+              ><b-td class="text-right" v-if="q.progress" variant="success">{{
+                q.title
+              }}</b-td>
+              <b-td class="text-right" v-else>{{ q.title }}</b-td>
+              <b-td>
+                <b-button href="/question/1">トライ!</b-button>
+              </b-td>
+            </b-tr>
+          </b-tbody>
+        </b-table-simple>
+        <!-- <div class="row">
+          <div class="col">No.</div>
+          <div class="col-8">問題名</div>
+        </div>
+        <div v-for="question in questions" :key="question.id" class="row">
+          <div class="col">
+            <i v-if="question.progress" class="far fa-check-square"></i>
+            <i v-else class="far fa-square"></i>
+            {{ question.id }}
+          </div>
+          <div class="col-8">
+            {{ question.title }}
+          </div>
+        </div> -->
+
+        <infinite-loading @infinite="infiniteHandler" spinner="spiral">
+          <div slot="spinner">ロード中...</div>
+          <div slot="no-more">もう登録されている問題がないよ</div>
+          <div slot="no-results">登録されている問題がないよ</div>
+        </infinite-loading>
       </div>
-      <div class="col-8">
-        問題名
-      </div>
-    </div>
-    <div v-for="question in questions" :key="question.id" class="row">
-      <div class="col">
-      <i v-if="question.progress" class="far fa-check-square"></i>
-      <i v-else class="far fa-square"></i>
-        {{ question.id }}
-      </div>
-      <div class="col-8">
-        {{ question.title }}
-      </div>
-    </div>
-    <infinite-loading @infinite="infiniteHandler" spinner="spiral">
-      <div slot="spinner">ロード中...</div>
-      <div slot="no-more">もう登録されている問題がないよ</div>
-      <div slot="no-results">登録されている問題がないよ</div>
-    </infinite-loading>
+    </b-container>
   </div>
 </template>
 
 <script>
+import Axios from "axios";
 export default {
-  name: 'Questions',
-  data () {
+  name: "Questions",
+  data() {
     return {
       questions: [],
       end: 0,
-      max: 0
-    }
+      max: 0,
+      pageNumber: 0,
+    };
   },
   methods: {
-    async infiniteHandler ($state) {
-      if (this.end === 0) await this.firstQuestion()
+    async infiniteHandler($state) {
+      if (this.end === 0) await this.firstQuestion();
+      console.log(this.end);
+      console.log(this.max);
       if (this.end >= this.max) {
-        $state.complete()
+        $state.complete();
       } else {
-        await this.getQuestions()
-        $state.loaded()
+        await this.getQuestions();
+        $state.loaded();
       }
     },
-    async getCount () {
-      this.max = 2
+    async getCount() {
+      await Axios.get("/question/count")
+        .then((res) => {
+          this.max = res.data["count"];
+        })
+        .catch((error) => {
+          console.log(error);
+          this.max = 10;
+        });
     },
     async firstQuestion() {
-      this.questions.push({
-        "id":1,"title": "Title","progress":false
-        }
-        )
-      this.end = this.questions.length
-      console.log(this.questions)
+      await Axios.get("/api/question")
+        .then((res) => {
+          this.questions = this.questions.concat(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+          this.questions = this.questions.concat({
+            id: 1,
+            title: "[TEST] Title",
+            progress: false,
+          });
+        });
+      this.end = this.questions.length;
+      console.log(this.questions);
     },
-    async getQuestions(){
-      this.questions = this.questions.concat({
-        "id":2,"title": "Title","progress":true
+    async getQuestions() {
+      await Axios.get("/api/question/paging", {
+        qid: this.end,
       })
-      this.end = this.questions.length
-      console.log(this.questions)
-    }
+        .then((res) => {
+          this.questions = this.questions.concat(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+          for (let i = this.end + 1; i <= this.end + 50; i++) {
+            if (i <= this.max) {
+              this.questions = this.questions.concat({
+                id: i,
+                title: "[TEST] Title",
+                progress: true,
+              });
+            }
+          }
+        });
+
+      // this.questions.sort(function (a, b) {
+      //   if (a.id > b.id) {
+      //     return 1;
+      //   } else {
+      //     return -1;
+      //   }
+      // });
+      this.end = this.questions.length;
+      console.log(this.questions);
+    },
   },
-  beforeMount(){
-    this.getCount()
-  }
-}
+
+  beforeMount() {
+    this.getCount();
+  },
+};
 </script>
+
+<style scoped>
+</style>
