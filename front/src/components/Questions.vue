@@ -85,7 +85,7 @@ export default {
       }
     },
     async getCount() {
-      await Axios.get("/question/count")
+      await Axios.get("/api/question/count")
         .then((res) => {
           this.max = res.data["count"];
         })
