@@ -5,9 +5,7 @@
   <div>
     <b-container>
       <h1>ユーザ一覧</h1>
-      <ul>
-        <li v-for="md in mainDatas" :key="md.id">{{ md.data }}</li>
-      </ul>
+      <p>開発中</p>
     </b-container>
   </div>
 </template>
@@ -17,15 +15,14 @@ import Axios from "axios";
 export default {
   data() {
     return {
-      mainDatas: [],
+      users: [],
     };
   },
   methods: {
     mtFunc() {
       Axios.get("/api/user/progress").then((res) => {
-        var buf = res.data;
-        for (let i = 0; i < buf.length(); i++) {
-          this.mainDatas = this.mainDatas.push({
+        for (let i = 0; i < res.data.length(); i++) {
+          this.users.push({
             id: i,
             data: res.data["uid"],
           });

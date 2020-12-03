@@ -40,7 +40,14 @@
       </b-table-simple>
 
       <infinite-loading @infinite="infiniteHandler" spinner="spiral">
-        <div slot="spinner">ロード中...</div>
+        <div slot="spinner">
+          <b-icon
+            icon="arrow-counterclockwise"
+            animation="spin-reverse"
+            font-scale="4"
+          ></b-icon
+          >ロード中...
+        </div>
         <div slot="no-more">もう登録されている問題がないよ</div>
         <div slot="no-results">登録されている問題がないよ</div>
       </infinite-loading>
