@@ -3,8 +3,8 @@
 
 <template>
   <div>
-    <b-container fluid>
-      <h1></h1>
+    <b-container>
+      <h2>各ユーザの状況</h2>
     </b-container>
   </div>
 </template>

@@ -85,7 +85,11 @@
           </b-col>
         </b-row>
 
-        <b-button pill variant="outline-primary" style="float: right"
+        <b-button
+          pill
+          variant="outline-primary"
+          style="float: right"
+          v-on:click="addQuestion"
           >問題を登録</b-button
         >
       </div>
@@ -121,7 +125,7 @@ export default {
         this.hints[i].id = i;
       }
     },
-    addQuestion() {
+    async addQuestion() {
       // postHints POST用のヒント達
       var postHints = [];
       // hintsの整形
@@ -129,25 +133,35 @@ export default {
         postHints.push({ hint: hint.hint });
       });
 
-      Axios.post("/api/question", {
+      await Axios.post("/api/question", {
         title: this.title,
         content: this.question,
         answer: this.answer,
         hints: postHints,
       })
         .then((res) => {
-          if (res.status == 201) {
-            console.log("追加完了");
-            this.router.push({ path: "/admin/question" });
-          } else if (res.status == 400) {
-            console.log("リクエスト無効");
-          } else {
-            console.log("トークンが無効");
+          switch (res.status) {
+            case 200:
+              console.log("追加完了");
+              this.$router.go(-1);
+              break;
+            case 400:
+              console.log("リクエストが無効");
+              this.$router.go(-1);
+              break;
+            case 401:
+              console.log("トークンエラー");
+              this.$router.push("/");
+              this.$router.go();
+              break;
+            default:
+              break;
           }
         })
         .catch((err) => {
           console.log(err);
         });
+      this.$router.go(-1);
     },
   },
 };
