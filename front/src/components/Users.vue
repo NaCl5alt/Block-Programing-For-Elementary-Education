@@ -41,7 +41,7 @@
               <b-td class="text-right">
                 <router-link
                   class="btn btn-info"
-                  :to="{ name: 'User', params: { id: user.id } }"
+                  :to="{ name: 'User', params: { id: this.user.id } }"
                 >
                   状況確認
                 </router-link>

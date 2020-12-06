@@ -148,7 +148,7 @@ export default {
     async mtFunc() {
       this.questionId = this.$route.params["id"];
 
-      Axios.get("/api/question/$(this.questionId)")
+      await Axios.get("/api/question/$(this.questionId)")
         .then((res) => {
           var bufHints = [];
           var bufStr0 = "";
@@ -192,8 +192,8 @@ export default {
           console.log(error);
         });
     },
-    showHint(questionId) {
-      Axios.get("/api/question/$(this.questionId)")
+    async showHint(questionId) {
+      await Axios.get("/api/question/$(this.questionId)")
         .then((res) => {
           this.visibleHint = res.data["hints"][questionId];
         })
