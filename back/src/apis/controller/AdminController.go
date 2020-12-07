@@ -1,5 +1,6 @@
 package controller
 
+/*
 import (
 	"net/http"
 	"strings"
@@ -20,3 +21,4 @@ type LoginResponse struct {
 	Token string `json:"token"`
 	Admin bool   `json:"admin"`
 }
+*/
