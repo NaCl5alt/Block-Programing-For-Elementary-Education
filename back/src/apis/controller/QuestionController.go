@@ -87,28 +87,34 @@ func (pc QuestionController) Answer(c *gin.Context) {
 
 }
 
-// func (pc QuestionController) countGET(c *gin.Context) {
+func (pc QuestionController) countGET(c *gin.Context) {
 
-// 	tokenString := c.Request.Header.Get("Authorization")
-// 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+	tokenString := c.Request.Header.Get("Authorization")
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-// 	token, err := auth.VerifyToken(tokenString)
-// 	if err != nil {
-// 		c.String(http.StatusUnauthorized, "Unauthorized")
-// 		return
-// 	}
-// 	claims := token.Claims.(jwt.MapClaims)
+	_, err := auth.VerifyToken(tokenString)
+	if err != nil {
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+	// tokenString := c.Request.Header.Get("Authorization")
+	// tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-// 	db := db.GormConnect()
-// 	problems := model.Problem{}
+	// _, err := auth.VerifyToken(tokenString)
+	// if err != nil {
+	// 	c.String(http.StatusUnauthorized, "Unauthorized")
+	// 	return
+	// }
+	db := db.GormConnect()
+	problems := model.Problem{}
 
-// 	db.First(&problem)
-// 	c.String(http.StatusCreated, "complete edit")
-// 	adf := QuestionResponse{
-// 		problem.count,
-// 	}
-// 	c.JSON(http.StatusOK,adf)
-// }
+	db.First(&problem)
+	c.String(http.StatusCreated, "complete edit")
+	adf := QuestionResponse{
+		problem.count,
+	}
+	c.JSON(http.StatusOK,adf)
+}
 
 // func (pc QuestionController) pagingGET(c *gin.Context) {
 // 	type QuestionResponse struct {
