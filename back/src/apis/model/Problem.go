@@ -9,5 +9,4 @@ type Problem struct {
 	Pro_Title   string `json:"title"`
 	Pro_Content string `json:"content"`
 	Pro_Answer  string `json:"answer"`
-	Hint_To_ID  int    `json:"hinttoid"`
 }
