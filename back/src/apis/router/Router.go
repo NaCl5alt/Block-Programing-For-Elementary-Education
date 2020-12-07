@@ -35,6 +35,7 @@ func SetRouter(db *gorm.DB) *gin.Engine {
 		api.GET("/question/paging", question.PagingGet)
 
 		api.GET("/user/progress/:id", admin.UserIdProgress)
+		api.GET("/user/progress", admin.AllProgress)
 	}
 
 	return r
