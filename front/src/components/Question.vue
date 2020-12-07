@@ -23,6 +23,20 @@
         </div>
       </div>
 
+      
+      
+      <div v-if="showAnswer">
+        <b-alert variant="success" v-if="visibleAnswer" show>正解!!</b-alert>
+        <b-alert variant="danger" v-else show>間違い!!</b-alert>
+      </div>
+      <div v-else>
+        <b-alert variant="light" show></b-alert>
+      </div>
+
+      <b-container>
+        <b-button pill style="float: right" variant="primary" v-on:click="checkAnswer">答えを送信</b-button>
+      </b-container>
+      
       <BlocklyComponent id="blockly1" :options="options" ref="foo"></BlocklyComponent>
       <p id="code">
         <button v-on:click="showCode()">Show JavaScript</button>
@@ -78,6 +92,8 @@ export default {
       visibleId: 0,
       visibleHint: "",
       visible: false,
+      visibleAnswer: false, // 正誤判定のフラグ
+      showAnswer: false, // 答えのアラートを表示するかのフラグ
       options: {
         media: "media/",
         grid: {
@@ -132,7 +148,7 @@ export default {
     async mtFunc() {
       this.questionId = this.$route.params["id"];
 
-      Axios.get("/api/question/$(this.questionId)")
+      await Axios.get("/api/question/$(this.questionId)")
         .then((res) => {
           var bufHints = [];
           var bufStr0 = "";
@@ -176,8 +192,8 @@ export default {
           console.log(error);
         });
     },
-    showHint(questionId) {
-      Axios.get("/api/question/$(this.questionId)")
+    async showHint(questionId) {
+      await Axios.get("/api/question/$(this.questionId)")
         .then((res) => {
           this.visibleHint = res.data["hints"][questionId];
         })
@@ -193,6 +209,27 @@ export default {
     },
     showCode() {
       this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
+    },
+    async checkAnswer() {
+      await Axios.post("/api/question$(this.questionId)", {
+        answer: this.code,
+      })
+        .then((res) => {
+          if (res.data["accept"]) {
+            // 正解だった時
+            this.showAnswer = true;
+            this.visibleAnswer = true;
+          } else {
+            // 間違いだった時
+            this.showAnswer = true;
+            this.visibleAnswer = false;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          this.showAnswer = true;
+          this.visibleAnswer = !this.visibleAnswer;
+        });
     },
   },
   beforeMount() {
