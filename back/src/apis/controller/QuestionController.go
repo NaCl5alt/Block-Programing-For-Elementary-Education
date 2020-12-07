@@ -20,6 +20,10 @@ type QuestionResponse struct {
 	Title string `json:"title"`
 }
 
+type CountResponse struct {
+	Count int `json:"count"`
+}
+
 type QuestionAnswer struct {
 	isCorrect bool `json:"accept"`
 }
@@ -84,55 +88,70 @@ func (pc QuestionController) Answer(c *gin.Context) {
 
 }
 
-// func (pc QuestionController) countGET(c *gin.Context) {
+func (pc QuestionController) CountGet(c *gin.Context) {
+	tokenString := c.Request.Header.Get("Authorization")
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-// 	tokenString := c.Request.Header.Get("Authorization")
-// 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+	_, err := auth.VerifyToken(tokenString)
+	if err != nil {
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
 
-// 	token, err := auth.VerifyToken(tokenString)
-// 	if err != nil {
-// 		c.String(http.StatusUnauthorized, "Unauthorized")
-// 		return
-// 	}
-// 	claims := token.Claims.(jwt.MapClaims)
+	var count int
 
-// 	db := db.GormConnect()
-// 	problems := model.Problem{}
+	db := db.GormConnect()
+	problems := model.Problem{}
+	db.Model(&problems).Count(&count)
 
-// 	db.First(&problem)
-// 	c.String(http.StatusCreated, "complete edit")
-// 	adf := QuestionResponse{
-// 		problem.count,
-// 	}
-// 	c.JSON(http.StatusOK,adf)
-// }
+	adf := CountResponse{
+		count,
+	}
 
-// func (pc QuestionController) pagingGET(c *gin.Context) {
-// 	type QuestionResponse struct {
-// 		Id int `json:"qid"`
-// 		Title string `json:"title"`
-// 	}
+	c.JSON(http.StatusOK, adf)
+}
 
-// 	tokenString := c.Request.Header.Get("Authorization")
-// 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+func (pc QuestionController) pagingGET(c *gin.Context) {
+	type QuestionResponse struct {
+		Id    int    `json:"qid"`
+		Title string `json:"title"`
+	}
+	type JsonRequest struct {
+		FieldStr  string `json:"field_str"`
+		FieldInt  int    `json:"field_int"`
+		FieldBool bool   `json:"field_bool"`
+	}
+	type Json struct {
+		Question_Id int `json:"qid"`
+	}
+	json := Json{}
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	tokenString := c.Request.Header.Get("Authorization")
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-// 	token, err := auth.VerifyToken(tokenString)
-// 	if err != nil {
-// 		c.String(http.StatusUnauthorized, "Unauthorized")
-// 		return
-// 	}
-// 	claims := token.Claims.(jwt.MapClaims)
+	_, err := auth.VerifyToken(tokenString)
+	if err != nil {
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+	// claims := token.Claims.(jwt.MapClaims)
 
-// 	db := db.GormConnect()
-// 	problem := model.Problem{}
+	db := db.GormConnect()
+	problem := model.Problem{}
 
-// 	for i := 0; i < 50; i++{
-// 		db.First(&problem)
-// 		c.String(http.StatusCreated, "complete edit")
-// 		adf := QuestionResponse{
-// 			problem,
-// 			problem.pro_title,
-// 		}
-// 		c.JSON(http.StatusOK,adf)
-// 	}
-// }
+	qid := 10
+	db.Limit(50).Where("qid > ?", qid).Find(&problem)
+	c.String(http.StatusCreated, "complete edit")
+	adf := QuestionResponse{
+		Id:    int(problem.ID),
+		Title: problem.Pro_Title,
+	}
+	// adf := QuestionResponse{
+	// 	Id: int(problem.ID),
+	// 	Title: problem.Pro_Title,
+	// }
+	c.JSON(http.StatusOK, adf)
+}

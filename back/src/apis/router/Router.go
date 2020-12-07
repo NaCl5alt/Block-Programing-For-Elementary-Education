@@ -28,6 +28,7 @@ func SetRouter(db *gorm.DB) *gin.Engine {
 		question := controller.QuestionController{}
 		api.GET("/question", question.Get)
 		api.POST("/question/:id", question.Answer)
+		api.GET("/question/count", question.CountGet)
 	}
 
 	return r
