@@ -98,7 +98,7 @@ export default {
           if (res.status === 200) {
             this.$cookies.set('token', res.data.token)
             this.$cookies.set('admin', res.data.admin)
-            this.$router.push({ path: 'question' })
+            this.$router.push("/question")
             this.$router.go()
           }
           console.log(res.data)
@@ -106,6 +106,8 @@ export default {
           console.log(error)
           console.log("not login")
           this.not_login = true
+          this.$cookies.remove('token')
+          this.$cookies.remove('admin')
         })
       } else {
         if(this.user_id==''&&this.password==''){

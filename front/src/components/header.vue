@@ -71,54 +71,54 @@
 <script>
 import axios from 'axios'
 export default {
-
   data () {
     return {
-    token:this.$cookies.get('token'),
-    admin:this.$cookies.get('admin'),
+      token:this.$cookies.get('token'),
+      admin:this.$cookies.get('admin'),
     }
   },
   methods:{
-  verifyfunc () {
-  this.$nextTick(() => {
-    axios.defaults.headers.common["Authorization"] = 
-      "Bearer " + this.$cookies.get("token");
-    axios.post('/api/token', { withCredentials: true }).then(res => {
-      console.log('status: ' + res.status)
-      if (res.status === 200) {
-        this.verify = true
-      }else if(res.status === 401){
-        this.verify = false
-        this.tokenget()
-      }else {
-        this.verify = false
-        this.$cookies.remove('token')
-        this.$cookies.remove('admin')
+    async verifyfunc () {
+      await axios.post('/api/token', {}, { 
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      }).then(res => {
+        // console.log('status: ' + res.status)
+        if (res.status === 200) {
+          this.verify = true
+        }else if(res.status === 401){
+          this.verify = false
+          this.tokenget()
+        }else {
+          this.verify = false
+          this.$cookies.remove('token')
+          this.$cookies.remove('admin')
         }
-    }).catch(err => {
-      console.log(err)
-    })
-  })
-},
-tokenget(){
-this.$nextTick(()=> {
-axios.get('/api/token', { withCredentials: true }).then(res => {
-  console.log('status: ' + res.status)
-  if (res.status === 200) {
-        this.$cookies.remove('token')
-        this.$cookies.remove('admin')
-        this.$cookies.set('token', res.data.token)
-        this.$cookies.set('admin', res.data.admin)
-        this.verify = true
-  }else this.verify = false
-}).catch(err => {
-  console.log(err)
-})
-})
-},
-beforeMount () {
-  this.verifyfunc()
-}
-}
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    async tokenget(){
+      await axios.get('/api/token', { withCredentials: true }).then(res => {
+        // console.log('status: ' + res.status)
+        if (res.status === 200) {
+          this.$cookies.remove('token')
+          this.$cookies.remove('admin')
+          this.$cookies.set('token', res.data.token)
+          this.$cookies.set('admin', res.data.admin)
+          this.verify = true
+        }else {
+          this.$cookies.remove('token')
+          this.$cookies.remove('admin')
+          this.verify = false
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  },
+  async beforeMount () {
+    await this.verifyfunc()
+  }
 }
 </script>
