@@ -11,7 +11,7 @@
       <div>
         <b-button
           href="/question"
-          variant="outline-primary"
+          variant="primary"
           id="btn_add_question"
           pill
           block
