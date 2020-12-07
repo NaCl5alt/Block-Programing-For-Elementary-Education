@@ -9,8 +9,8 @@ import (
 
 func GormConnect() *gorm.DB {
 	DBMS := "mysql"
-	USER := "user"
-	PASS := "user"
+	USER := "root"
+	PASS := "root"
 	PROTOCOL := "tcp(localhost:3306)"
 	DBNAME := "BlockProgram"
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?parseTime=true"
