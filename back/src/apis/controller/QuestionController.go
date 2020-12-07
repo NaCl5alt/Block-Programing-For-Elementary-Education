@@ -19,10 +19,6 @@ type QuestionResponse struct {
 	Id    int    `json:"qid"`
 	Title string `json:"title"`
 }
-type CountResponse struct{
-	Count int `json:"count"`
-}
-
 type CountResponse struct {
 	Count int `json:"count"`
 }
@@ -140,7 +136,6 @@ func (pc QuestionController) pagingGET(c *gin.Context) {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
-<<<<<<< HEAD
 	// claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
@@ -159,53 +154,3 @@ func (pc QuestionController) pagingGET(c *gin.Context) {
 	// }
 	c.JSON(http.StatusOK, adf)
 }
-=======
-	// tokenString := c.Request.Header.Get("Authorization")
-	// tokenString = strings.TrimPrefix(tokenString, "Bearer ")
-
-	// _, err := auth.VerifyToken(tokenString)
-	// if err != nil {
-	// 	c.String(http.StatusUnauthorized, "Unauthorized")
-	// 	return
-	// }
-	db := db.GormConnect()
-	problems := model.Problem{}
-
-	db.First(&problem)
-	c.String(http.StatusCreated, "complete edit")
-	adf := QuestionResponse{
-		problem.count,
-	}
-	c.JSON(http.StatusOK,adf)
-}
-
-// func (pc QuestionController) pagingGET(c *gin.Context) {
-// 	type QuestionResponse struct {
-// 		Id int `json:"qid"`
-// 		Title string `json:"title"`
-// 	}
-
-// 	tokenString := c.Request.Header.Get("Authorization")
-// 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
-
-// 	token, err := auth.VerifyToken(tokenString)
-// 	if err != nil {
-// 		c.String(http.StatusUnauthorized, "Unauthorized")
-// 		return
-// 	}
-// 	claims := token.Claims.(jwt.MapClaims)
-
-// 	db := db.GormConnect()
-// 	problem := model.Problem{}
-
-// 	for i := 0; i < 50; i++{
-// 		db.First(&problem)
-// 		c.String(http.StatusCreated, "complete edit")
-// 		adf := QuestionResponse{
-// 			problem,
-// 			problem.pro_title,
-// 		}
-// 		c.JSON(http.StatusOK,adf)
-// 	}
-// }
->>>>>>> 8da7f9409586c3a4fb91dabec6ca4425ebbac7dd
