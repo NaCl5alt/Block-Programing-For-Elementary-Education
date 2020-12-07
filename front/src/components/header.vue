@@ -75,12 +75,14 @@ export default {
   data () {
     return {
     token:this.$cookies.get('token'),
-    admin:this.$cookies.get('admin')
+    admin:this.$cookies.get('admin'),
     }
   },
   methods:{
   verifyfunc () {
   this.$nextTick(() => {
+    axios.defaults.headers.common["Authorization"] = 
+      "Bearer" + this.$cookies.get("token");
     axios.post('/api/token', { withCredentials: true }).then(res => {
       console.log('status: ' + res.status)
       if (res.status === 200) {
