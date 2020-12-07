@@ -12,6 +12,8 @@ func SetRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 
 	ctrl := controller.UserController{}
+	question := controller.QuestionController{}
+	admin := controller.AdminController{}
 	api := r.Group("/api")
 	{
 		api.GET("/user", ctrl.List)
@@ -25,11 +27,13 @@ func SetRouter(db *gorm.DB) *gin.Engine {
 		api.GET("/token", ctrl.Refresh)
 		api.POST("/token", ctrl.TokenCheck)
 		api.GET("/progress", ctrl.UserProgress)
-		question := controller.QuestionController{}
+
 		api.GET("/question", question.Get)
 		api.POST("/question/:id", question.Answer)
 		api.GET("/question/count", question.CountGet)
 		api.GET("/question/paging", question.PagingGet)
+
+		api.GET("/user/progress/:id", admin.UserIdProgress)
 	}
 
 	return r
