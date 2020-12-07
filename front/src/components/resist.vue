@@ -38,16 +38,24 @@ export default {
         console.log(error)
       })
     },
+    check () {
+      axios.post('/api/user/check', {
+        userid: this.userid,
+      }).then(res => {
+        console.log(res)
+        this.erroruserid_used = res.data.exist
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     click () {
-      if (this.userid === true) {
-        this.erroruserid = false
-        this.erroruserid_used = true
-      }
       if (this.userid !== '' && this.password !== '') {
-        this.erroruserid_used = false
-        this.erroruserid = false
-        this.errorpassword = false
-        this.regist()
+        this.check()
+        if (this.erroruserid_used === false) {
+          this.erroruserid = false
+          this.errorpassword = false
+          this.regist()
+        }
       }
       else if (this.userid === '' && this.password === '') {
         this.erroruserid_used = false
