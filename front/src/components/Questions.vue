@@ -150,10 +150,9 @@ export default {
       console.log(this.questions);
     },
   },
-
   beforeMount() {
-    this.getCount();
-  },
+    this.getCount()
+  }
 };
 </script>
 

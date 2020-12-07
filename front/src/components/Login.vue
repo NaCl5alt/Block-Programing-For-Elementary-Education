@@ -11,33 +11,27 @@
           <div id="form-div">
             <b-card bg-variant="light">
               <h2>ログイン</h2>
-
               <b-form>
                 <b-form-group
                   label="ユーザID"
                   label-cols-sm="4"
-                  description="未登録の方は新規登録をしてください。"
-                >
+                  description="未登録の方は新規登録をしてください。">
                   <b-form-input
                     v-model="user_id"
                     type="text"
-                    name="user_id"
-                  ></b-form-input>
+                    name="user_id">
+                  </b-form-input>
                 </b-form-group>
-                
                 <p v-if=nulluserid class="miss">
                 ユーザIDを入力してください。
                 </p>
-                
-
                 <b-form-group label="パスワード" label-cols-sm="4">
                   <b-form-input
                     v-model="password"
                     type="password"
-                    name="password"
-                  ></b-form-input>
+                    name="password">
+                  </b-form-input>
                 </b-form-group>
-                
                 <p v-if=nullpassword class="miss">
                 パスワードを入力してください。
                 </p>
@@ -50,11 +44,8 @@
                     <b-button pill variant="outline-primary" v-on:click="login">ログイン</b-button>
                   </b-col>
                   <b-col>
-                    <b-button pill type="reset" variant="outline-danger"
-                      >リセット</b-button
-                    >
+                    <b-button pill type="reset" variant="outline-danger">リセット</b-button>
                   </b-col>
-                
                 </b-row>
               </b-form>
             </b-card>
@@ -89,17 +80,20 @@ export default {
     }
   },
   methods:{
-    login(){
+    async login(){
       if(this.user_id!='' && this.password!='') {
-        axios.post('/api/login',{
+        await axios.post('/api/login',{
           userid: this.user_id,
           password: this.password
         }).then(res => {
           if (res.status === 200) {
+            this.not_login=this.nulluserid=this.nullpassword=false
             this.$cookies.set('token', res.data.token)
             this.$cookies.set('admin', res.data.admin)
-            this.$router.push({ path: 'question' })
-            this.$router.go()
+            var path = '/question'
+            if (this.$route.query.redirect) path = this.$route.query.redirect
+            console.log(path)
+            this.$router.push({ path: path })
           }
           console.log(res.data)
         }).catch(error => {
