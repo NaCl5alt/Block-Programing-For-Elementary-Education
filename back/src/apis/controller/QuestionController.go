@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	// jwt "github.com/dgrijalva/jwt-go"
 	"../auth"
 	"../db"
 	"../model"
@@ -24,7 +23,11 @@ type CountResponse struct {
 }
 
 type QuestionAnswer struct {
-	isCorrect bool `json:"accept"`
+	IsCorrect bool `json:"accept"`
+}
+
+type AnswerJson struct {
+	Answer string `json:"answer"`
 }
 
 type Json struct {
@@ -40,11 +43,6 @@ func (pc QuestionController) Get(c *gin.Context) {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
-	// _,ok := token.Claims.(jwt.MapClaims)
-
-	// if !ok {
-	// 	panic(ok)
-	// }
 
 	db := db.GormConnect()
 	problem := model.Problem{}
@@ -81,14 +79,24 @@ func (pc QuestionController) Answer(c *gin.Context) {
 
 	db.First(&problem)
 
-	fmt.Println("qid:" + c.Param("id"))
+	json := AnswerJson{}
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	accept := false
+	if problem.Pro_Answer == json.Answer {
+		accept = true
+	} else {
+		accept = false
+	}
 
 	adf := QuestionAnswer{
-		isCorrect: problem.Pro_Answer == c.PostForm("answer"),
+		IsCorrect: accept,
 	}
 
 	c.JSON(http.StatusOK, adf)
-
 }
 
 func (pc QuestionController) CountGet(c *gin.Context) {
