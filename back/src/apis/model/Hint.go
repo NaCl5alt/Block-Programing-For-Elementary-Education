@@ -6,6 +6,6 @@ import (
 
 type Hint struct {
 	gorm.Model
-	Hint_ID int    `json:"hintid"`
-	Hint    string `json:"hint"`
+	Pro_Id int    `json:"proid"`
+	Hint   string `json:"hint"`
 }

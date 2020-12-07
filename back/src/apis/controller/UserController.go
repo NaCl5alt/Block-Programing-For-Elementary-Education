@@ -73,7 +73,7 @@ func (pc UserController) Login(c *gin.Context) {
 	if err != nil {
 		c.String(http.StatusBadRequest, "request failed(json error)")
 	}
-	db.First(&users, "user_id=?", user.User_ID)
+	db.First(&users, "user_id=?", user.User_Id)
 
 	err = crypt.CompareHashAndPassword(users.Password, user.Password)
 	if err != nil {
@@ -84,7 +84,7 @@ func (pc UserController) Login(c *gin.Context) {
 	token := jwt.New(jwt.GetSigningMethod("HS256"))
 
 	token.Claims = jwt.MapClaims{
-		"user":     user.User_ID,
+		"user":     user.User_Id,
 		"username": users.User_Name,
 		"exp":      time.Now().Add(time.Hour * 1).Unix(),
 	}
@@ -140,7 +140,7 @@ func (pc UserController) Edit(c *gin.Context) {
 		c.String(http.StatusBadRequest, "request failed(json error)")
 	}
 
-	users.User_ID = claims["user"].(string)
+	users.User_Id = claims["user"].(string)
 	users_after := users
 	db.First(&users_after)
 	users_after.User_Name = user.User_Name
@@ -158,7 +158,7 @@ func (pc UserController) Check(c *gin.Context) {
 		c.String(http.StatusBadRequest, "request failed(json error)")
 	}
 
-	if err := db.Where("user_id = ?", user.User_ID).First(&user).Error; err != nil {
+	if err := db.Where("user_id = ?", user.User_Id).First(&user).Error; err != nil {
 		adf := CheckResponse{
 			false,
 		}
@@ -191,10 +191,10 @@ func (pc UserController) IdEdit(c *gin.Context) {
 		c.String(http.StatusBadRequest, "request failed(json error)")
 	}
 
-	users.User_ID = claims["user"].(string)
+	users.User_Id = claims["user"].(string)
 	users_after := users
 	db.First(&users_after)
-	users_after.User_ID = user.User_ID
+	users_after.User_Id = user.User_Id
 	db.Model(&users).Update(&users_after)
 	db.Save(&users_after)
 	c.String(http.StatusCreated, "complete edit")
@@ -220,7 +220,7 @@ func (pc UserController) PasswordEdit(c *gin.Context) {
 		c.String(http.StatusBadRequest, "request failed(json error)")
 	}
 
-	users.User_ID = claims["user"].(string)
+	users.User_Id = claims["user"].(string)
 	users_after := users
 	db.First(&users_after)
 	users_after.Password, err = crypt.PasswordEncrypt(user.Password)
@@ -248,7 +248,7 @@ func (pc UserController) Refresh(c *gin.Context) {
 	token = jwt.New(jwt.GetSigningMethod("HS256"))
 
 	token.Claims = jwt.MapClaims{
-		"user":     user.User_ID,
+		"user":     user.User_Id,
 		"username": users.User_Name,
 		"exp":      time.Now().Add(time.Hour * 1).Unix(),
 	}
