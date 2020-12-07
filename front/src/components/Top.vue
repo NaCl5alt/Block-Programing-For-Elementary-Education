@@ -44,32 +44,32 @@ h1 {
 </template>
 
 <script>
-import Axios from "axios";
+// import Axios from "axios";
 import Login from "./Login.vue";
 export default {
   components: {
     Login,
   },
   methods: {
-    tokenCheck() {
-      Axios.post("/api/token").then((res) => {
-        switch (res.status) {
-          case 200:
-            this.$router.push({ path: "/question" });
-            this.$router.go();
-            break;
+    // tokenCheck() {
+    //   Axios.post("/api/token").then((res) => {
+    //     switch (res.status) {
+    //       case 200:
+    //         this.$router.push({ path: "/question" });
+    //         this.$router.go();
+    //         break;
 
-          default:
-            this.$cookies.remove("token"); // トークンを削除して
-            this.$router.push({ path: "/" });
-            this.$router.go(); // リダイレクト
-            break;
-        }
-      });
-    },
+    //       default:
+    //         this.$cookies.remove("token"); // トークンを削除して
+    //         this.$router.push({ path: "/" });
+    //         this.$router.go(); // リダイレクト
+    //         break;
+    //     }
+    //   });
+    // },
   },
   beforeMount() {
-    this.tokenCheck();
+    // this.tokenCheck();
   },
 };
 </script>

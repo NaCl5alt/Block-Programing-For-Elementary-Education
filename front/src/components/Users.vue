@@ -5,7 +5,7 @@
   <div>
     <b-container>
       <h1>ユーザ一覧</h1>
-      <!-- <p>開発中</p> -->
+
       <div>
         <b-table-simple>
           <colgroup style="width: 20%"></colgroup>
@@ -41,7 +41,7 @@
               <b-td class="text-right">
                 <router-link
                   class="btn btn-info"
-                  :to="{ name: 'User', params: { id: this.user.id } }"
+                  :to="{ name: 'User', params: { id: user.id } }"
                 >
                   状況確認
                 </router-link>
@@ -69,7 +69,7 @@ export default {
     };
   },
   methods: {
-    async mtFunc() {
+    async getQuestionCount() {
       await Axios.get("/api/question/count")
         .then((res) => {
           this.questionCount = res.data["count"];
@@ -78,10 +78,20 @@ export default {
           console.log(error);
           this.questionCount = 50;
         });
-
-      await Axios.get("/user/progress")
+    },
+    async mtFunc() {
+      await Axios.get("/api/user/progress")
         .then((res) => {
           this.users = res.data;
+          var count = 0;
+          for (const key in res.data) {
+            count = res.data[key]["progress"].length;
+            this.users = this.users.concat({
+              id: key,
+              progress: res.data[key]["progress"],
+              count: count,
+            });
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -93,15 +103,17 @@ export default {
           for (const key in buf_users) {
             count = buf_users[key]["progress"].length;
             this.users.push({
-              id: key,
+              id: parseInt(key, 10),
               progress: buf_users[key]["progress"],
               count: count,
             });
           }
         });
+      console.log(this.users[0]);
     },
   },
   beforeMount() {
+    this.getQuestionCount();
     this.mtFunc();
   },
 };

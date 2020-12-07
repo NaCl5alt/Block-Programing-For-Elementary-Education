@@ -41,8 +41,8 @@
                 <p v-if=nullpassword class="miss">
                 パスワードを入力してください。
                 </p>
-                <p v-if="misspassword" class="miss">
-                パスワードが間違っています。
+                <p v-if="not_login" class="miss">
+                ログインできませんでした。
                 </p>
                 <b-row>
                   <b-col></b-col>
@@ -83,8 +83,7 @@ export default {
     return{
       user_id:'',
       password:'',
-      missuserid: false,
-      misspassword: false,
+      not_login:false,
       nulluserid: false,
       nullpassword: false
     }
@@ -99,19 +98,23 @@ export default {
           if (res.status === 200) {
             this.$cookies.set('token', res.data.token)
             this.$cookies.set('admin', res.data.admin)
-            this.$router.push({ path: 'question' })
+            this.$router.push("/question")
             this.$router.go()
           }
           console.log(res.data)
         }).catch(error => {
           console.log(error)
+          console.log("not login")
+          this.not_login = true
+          this.$cookies.remove('token')
+          this.$cookies.remove('admin')
         })
       } else {
-        if(this.userid==""&&this.password==""){
+        if(this.user_id==''&&this.password==''){
           this.nulluserid = true
           this.nullpassword = true
         }else{
-          if(this.userid==""){
+          if(this.user_id==''){
             this.nulluserid = true 
           }else{ 
             if(this.password==''){

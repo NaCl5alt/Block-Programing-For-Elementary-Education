@@ -277,3 +277,38 @@ func (pc UserController) TokenCheck(c *gin.Context) {
 	}
 	c.String(http.StatusOK, "token status ok")
 }
+
+func (pc UserController) UserProgress(c *gin.Context) {
+	tokenString := c.Request.Header.Get("Authorization")
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+
+	token, err := auth.VerifyToken(tokenString)
+	if err != nil {
+		c.String(http.StatusUnauthorized, "token is invalid")
+		return
+	}
+	claims := token.Claims.(jwt.MapClaims)
+
+	db := db.GormConnect()
+	user := model.User{}
+	db.First(&user, "user_id=?", claims["user"])
+	progress := []model.Progress{}
+	db.Find(&progress, "user_id=?", user.ID)
+	var count int
+	db.Model(&progress).Where("user_id = ?", user.ID).Count(&count)
+
+	var proid []int
+	for i := 0; i < count; i++ {
+		proid = append(proid, progress[i].Pro_Id)
+	}
+
+	type ResponseProgress struct {
+		QuestionId []int `json:"progress"`
+	}
+
+	adf := ResponseProgress{
+		proid,
+	}
+
+	c.JSON(http.StatusOK, adf)
+}
