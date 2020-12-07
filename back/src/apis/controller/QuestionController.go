@@ -27,6 +27,10 @@ type QuestionAnswer struct {
 	isCorrect bool `json:"accept"`
 }
 
+type Json struct {
+	Question_Id int `json:"qid"`
+}
+
 func (pc QuestionController) Get(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
@@ -110,24 +114,7 @@ func (pc QuestionController) CountGet(c *gin.Context) {
 	c.JSON(http.StatusOK, adf)
 }
 
-func (pc QuestionController) pagingGET(c *gin.Context) {
-	type QuestionResponse struct {
-		Id    int    `json:"qid"`
-		Title string `json:"title"`
-	}
-	type JsonRequest struct {
-		FieldStr  string `json:"field_str"`
-		FieldInt  int    `json:"field_int"`
-		FieldBool bool   `json:"field_bool"`
-	}
-	type Json struct {
-		Question_Id int `json:"qid"`
-	}
-	json := Json{}
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+func (pc QuestionController) PagingGet(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
@@ -136,21 +123,18 @@ func (pc QuestionController) pagingGET(c *gin.Context) {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
-	// claims := token.Claims.(jwt.MapClaims)
+
+	json := Json{}
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	db := db.GormConnect()
-	problem := model.Problem{}
+	problem := []model.Problem{}
 
-	qid := 10
-	db.Limit(50).Where("qid > ?", qid).Find(&problem)
-	c.String(http.StatusCreated, "complete edit")
-	adf := QuestionResponse{
-		Id:    int(problem.ID),
-		Title: problem.Pro_Title,
-	}
-	// adf := QuestionResponse{
-	// 	Id: int(problem.ID),
-	// 	Title: problem.Pro_Title,
-	// }
-	c.JSON(http.StatusOK, adf)
+	qid := 1
+	db.Limit(50).Where("ID >= ?", qid).Find(&problem)
+
+	c.JSON(http.StatusOK, problem)
 }
