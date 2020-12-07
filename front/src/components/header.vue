@@ -82,7 +82,7 @@ export default {
   verifyfunc () {
   this.$nextTick(() => {
     axios.defaults.headers.common["Authorization"] = 
-      "Bearer" + this.$cookies.get("token");
+      "Bearer " + this.$cookies.get("token");
     axios.post('/api/token', { withCredentials: true }).then(res => {
       console.log('status: ' + res.status)
       if (res.status === 200) {
