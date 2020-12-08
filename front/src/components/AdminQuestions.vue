@@ -25,13 +25,13 @@
           </b-tr>
         </b-thead>
         <b-tbody>
-          <b-tr v-for="q in questions" :key="q.id">
-            <b-td class="text-right">{{ q.id }}</b-td>
+          <b-tr v-for="q in questions" :key="q.qid">
+            <b-td class="text-right">{{ q.qid }}</b-td>
             <b-td class="text-right">{{ q.title }}</b-td>
             <b-td>
               <router-link
                 class="btn btn-info"
-                :to="{ name: 'QuestionEdit', params: { id: q.id } }"
+                :to="{ name: 'QuestionEdit', params: { id: q.qid } }"
                 >編集</router-link
               >
             </b-td>
@@ -62,7 +62,7 @@ export default {
     return {
       questions: [],
       fields: [
-        { key: "id", label: "No." },
+        { key: "qid", label: "No." },
         { key: "title", label: "問題名" },
       ],
       end: 0,
@@ -82,8 +82,9 @@ export default {
       }
     },
     async getCount() {
-      await Axios.get("/question/count")
-        .then((res) => {
+      await Axios.get("/api/question/count",{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      }).then((res) => {
           this.max = res.data["count"];
         })
         .catch((error) => {
@@ -92,7 +93,9 @@ export default {
         });
     },
     async firstQuestion() {
-      await Axios.get("/api/question")
+      await Axios.get("/api/question",{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      })
         .then((res) => {
           this.questions = this.questions.concat(res.data);
         })
@@ -111,6 +114,8 @@ export default {
       var test = false;
       await Axios.get("/api/question/paging", {
         qid: this.end,
+      },{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
       })
         .then((res) => {
           this.questions = this.questions.concat(res.data);
@@ -132,8 +137,8 @@ export default {
       console.log(this.questions);
     },
   },
-  beforeMount() {
-    this.getCount();
+  async beforeMount() {
+    await this.getCount();
   },
 };
 </script>

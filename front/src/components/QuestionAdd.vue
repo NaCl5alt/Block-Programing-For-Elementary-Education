@@ -138,6 +138,8 @@ export default {
         content: this.question,
         answer: this.answer,
         hints: postHints,
+      },{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
       })
         .then((res) => {
           switch (res.status) {
