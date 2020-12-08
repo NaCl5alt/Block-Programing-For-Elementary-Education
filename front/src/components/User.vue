@@ -25,15 +25,8 @@
               <b-td class="text-right">{{ q.id }}</b-td>
               <b-td class="text-right">{{ q.title }}</b-td>
               <b-td>
-                <p
-                  v-if="q.progress"
-                  :to="{ name: 'Question', params: { id: q.id } }"
-                >
-                  トライ!
-                </p>
-                <p v-else :to="{ name: 'Question', params: { id: q.id } }">
-                  <b-icon icon="star"></b-icon> 完了
-                </p>
+                <p v-if="q.progress"><b-icon icon="star"></b-icon> 完了</p>
+                <p v-else>未完了</p>
               </b-td>
             </b-tr>
           </b-tbody>
@@ -75,16 +68,16 @@ export default {
     async mtFunc() {
       this.userId = this.$route.params["id"];
 
-      await Axios.get("/api/user/$(this.id)/progress")
+      await Axios.get("/api/user/progress/$(this.id)")
         .then((res) => {
-          this.data = res.data;
+          this.data = res.data["progress"];
         })
         .catch((error) => {
           console.log(error);
           var test_data = {
             progress: [1, 2, 3, 4],
           };
-          this.data = test_data;
+          this.data = test_data["progress"];
         });
     },
     async infiniteHandler($state) {
@@ -111,14 +104,18 @@ export default {
     async firstQuestion() {
       await Axios.get("/api/question")
         .then((res) => {
-          this.questions = this.questions.concat(res.data);
+          this.questions = this.questions.concat({
+            id: res.data["qid"],
+            title: res.data["title"],
+            progress: res.data["progress"],
+          });
         })
         .catch((error) => {
           console.log(error);
           this.questions = this.questions.concat({
             id: 1,
             title: "[TEST] Title",
-            progress: false,
+            progress: true,
           });
         });
       this.end = this.questions.length;

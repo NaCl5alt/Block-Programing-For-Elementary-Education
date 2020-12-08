@@ -23,10 +23,6 @@
         </div>
       </div>
 
-      
-      
-      
-
       <b-container>
         <div v-if="showAnswer">
           <b-alert variant="success" v-if="visibleAnswer" show>正解!!</b-alert>

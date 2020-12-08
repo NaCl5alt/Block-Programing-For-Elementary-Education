@@ -21,9 +21,9 @@
             </b-tr>
           </b-thead>
           <b-tbody>
-            <b-tr v-for="user in users" :key="user.id">
+            <b-tr v-for="user in users" :key="user.uid">
               <b-td class="text-right">
-                {{ user.id }}
+                {{ user.uid }}
               </b-td>
               <b-td class="text-right">
                 <b-progress
@@ -82,32 +82,37 @@ export default {
     async mtFunc() {
       await Axios.get("/api/user/progress")
         .then((res) => {
-          this.users = res.data;
-          var count = 0;
-          for (const key in res.data) {
-            count = res.data[key]["progress"].length;
-            this.users = this.users.concat({
-              id: key,
-              progress: res.data[key]["progress"],
-              count: count,
-            });
-          }
+          this.users = res.data["prog"];
+          this.users.forEach((user) => {
+            user["count"] = user["progress"].length;
+          });
+          // for (const key in res.data) {
+          //   count = res.data[key]["progress"].length;
+          //   this.users = this.users.concat({
+          //     id: key,
+          //     progress: res.data[key]["progress"],
+          //     count: count,
+          //   });
+          // }
         })
         .catch((error) => {
           console.log(error);
-          var count = 0;
           var buf_users = {
-            1: { progress: [1, 2, 3, 4, 5] },
-            2: { progress: [1, 2] },
+            prog: [
+              {
+                uid: 1,
+                progress: [1, 2, 3, 4, 5],
+              },
+              {
+                uid: 2,
+                progress: [1, 2, 3],
+              },
+            ],
           };
-          for (const key in buf_users) {
-            count = buf_users[key]["progress"].length;
-            this.users.push({
-              id: parseInt(key, 10),
-              progress: buf_users[key]["progress"],
-              count: count,
-            });
-          }
+          this.users = buf_users["prog"];
+          this.users.forEach((user) => {
+            user["count"] = user["progress"].length;
+          });
         });
       console.log(this.users[0]);
     },
