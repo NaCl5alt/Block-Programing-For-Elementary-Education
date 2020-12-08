@@ -25,17 +25,27 @@
 
       
       
-      <div v-if="showAnswer">
-        <b-alert variant="success" v-if="visibleAnswer" show>正解!!</b-alert>
-        <b-alert variant="danger" v-else show>間違い!!</b-alert>
-      </div>
-      <div v-else>
-        <b-alert variant="light" show></b-alert>
-      </div>
+      
 
       <b-container>
-        <b-button pill style="float: right" variant="primary" v-on:click="runCode()">▶プログラムを実行</b-button>
-        <b-button pill style="float: right;margin-right:10px;" variant="primary" v-on:click="checkAnswer">答えを送信</b-button>
+        <div v-if="showAnswer">
+          <b-alert variant="success" v-if="visibleAnswer" show>正解!!</b-alert>
+          <b-alert variant="danger" v-else show>間違い!!</b-alert>
+        </div>
+        <div v-else>
+          <b-alert variant="light" show></b-alert>
+        </div>
+        <b-row>
+          <b-col sm="6">
+            <b-form-input v-model="usersAnswer" type="text" name="usersAnswer" placeholder="ここに答えを入力"></b-form-input>
+          </b-col>
+          <b-col sm="2">
+            <b-button pill style="float: right" variant="primary" v-on:click="checkAnswer">答えを送信</b-button>
+          </b-col>
+          <b-col>
+            <b-button pill style="float: right" variant="primary" v-on:click="runCode()">▶プログラムを実行</b-button>
+          </b-col>
+        </b-row>
       </b-container>
     </b-container>
     <b-container>
@@ -94,6 +104,7 @@ export default {
       visibleId: 0,
       visibleHint: "",
       visible: false,
+      usersAnswer: "",
       visibleAnswer: false, // 正誤判定のフラグ
       showAnswer: false, // 答えのアラートを表示するかのフラグ
       options: {
@@ -217,9 +228,10 @@ export default {
         alert(e);
       }
     },
+    // 回答チェック
     async checkAnswer() {
       await Axios.post("/api/question$(this.questionId)", {
-        answer: this.code,
+        answer: this.usersAnswer,
       })
         .then((res) => {
           if (res.data["accept"]) {

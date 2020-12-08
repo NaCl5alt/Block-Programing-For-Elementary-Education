@@ -22,6 +22,17 @@
           >しましょう！！</b-popover
         >
       </h2>
+      <b-container>
+        <b-button
+          v-if="isAdmin"
+          pill
+          block
+          variant="primary"
+          :to="{ name: 'Admin' }"
+          >管理者ページへ</b-button
+        >
+      </b-container>
+
       <div>
         <b-table-simple hover>
           <colgroup style="width: 20%"></colgroup>
@@ -85,9 +96,11 @@ export default {
       ],
       end: 0,
       max: 0,
+      isAdmin: false,
     };
   },
   methods: {
+    // 無限スクロール用
     async infiniteHandler($state) {
       if (this.end === 0) await this.firstQuestion();
       console.log(this.end);
@@ -149,10 +162,15 @@ export default {
       this.end = this.questions.length;
       console.log(this.questions);
     },
+    checkAdmin() {
+      // this.isAdmin = this.$cookies.get("admin");
+      this.isAdmin = true;
+    },
   },
   beforeMount() {
-    this.getCount()
-  }
+    this.getCount();
+    this.checkAdmin();
+  },
 };
 </script>
 
