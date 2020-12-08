@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	jwt "github.com/dgrijalva/jwt-go"
+
 	"../auth"
 	"../db"
 	"../model"
@@ -16,15 +16,9 @@ import (
 type QuestionController struct{}
 
 type QuestionResponse struct {
-<<<<<<< Updated upstream
-	Id    int    `json:"qid"`
-	Title string `json:"title"`
-	Progress bool `json:"progress"`
-=======
 	Id       int    `json:"qid"`
 	Title    string `json:"title"`
 	Progress bool   `json:"progress"`
->>>>>>> Stashed changes
 }
 type CountResponse struct {
 	Count int `json:"count"`
@@ -66,11 +60,6 @@ func (pc QuestionController) Get(c *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
-<<<<<<< Updated upstream
-	
-=======
-
->>>>>>> Stashed changes
 	problem := model.Problem{}
 	db.First(&problem)
 
@@ -79,11 +68,6 @@ func (pc QuestionController) Get(c *gin.Context) {
 
 	progress := []model.Progress{}
 	db.Find(&progress, "user_id=?", user.ID)
-<<<<<<< Updated upstream
-	
-=======
-
->>>>>>> Stashed changes
 	count := 0
 	db.Where("user_id=? AND pro_id=?", user.ID, problem.ID).Find(&progress).Count(&count)
 
@@ -95,13 +79,8 @@ func (pc QuestionController) Get(c *gin.Context) {
 	}
 
 	adf := QuestionResponse{
-<<<<<<< Updated upstream
-		Id:    int(problem.ID),
-		Title: problem.Pro_Title,
-=======
 		Id:       int(problem.ID),
 		Title:    problem.Pro_Title,
->>>>>>> Stashed changes
 		Progress: match,
 	}
 
