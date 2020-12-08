@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-
+	jwt "github.com/dgrijalva/jwt-go"
 	"../auth"
 	"../db"
 	"../model"
@@ -17,6 +17,7 @@ type QuestionController struct{}
 type QuestionResponse struct {
 	Id    int    `json:"qid"`
 	Title string `json:"title"`
+	Progress bool `json:"progress"`
 }
 type CountResponse struct {
 	Count int `json:"count"`
@@ -49,23 +50,39 @@ func (pc QuestionController) Get(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	_, err := auth.VerifyToken(tokenString)
+	token, err := auth.VerifyToken(tokenString)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
+	claims := token.Claims.(jwt.MapClaims)
+
 	db := db.GormConnect()
+	
 	problem := model.Problem{}
-
 	db.First(&problem)
-	c.String(http.StatusCreated, "complete edit")
 
-	fmt.Println(problem)
+	user := model.User{}
+	db.First(&user, "user_id=?", claims["user"])
+
+	progress := []model.Progress{}
+	db.Find(&progress, "user_id=?", user.ID)
+	
+	count := 0
+	db.Where("user_id=? AND pro_id=?", user.ID, problem.ID).Find(&progress).Count(&count)
+
+	match := false
+	if count == 0 {
+		match = false
+	} else {
+		match = true
+	}
 
 	adf := QuestionResponse{
 		Id:    int(problem.ID),
 		Title: problem.Pro_Title,
+		Progress: match,
 	}
 
 	c.JSON(http.StatusOK, adf)
