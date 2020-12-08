@@ -68,6 +68,25 @@ func (pc AdminController) AddQuestion(c *gin.Context) {
 	c.String(http.StatusCreated, "add complete")
 }
 
+func (pc AdminController) Delete(c *gin.Context) {
+	tokenString := c.Request.Header.Get("Authorization")
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+
+	_, err := auth.VerifyToken(tokenString)
+	if err != nil {
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	problem := model.Problem{}
+	u64, err := strconv.ParseUint(c.Param("id"), 10, 0)
+	problem.ID = uint(u64)
+
+	db := db.GormConnect()
+	db.Delete(&problem)
+	c.String(http.StatusCreated, "complete delete")
+}
+
 func (pc AdminController) AllProgress(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")

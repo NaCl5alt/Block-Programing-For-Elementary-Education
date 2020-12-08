@@ -37,6 +37,7 @@ func SetRouter(db *gorm.DB) *gin.Engine {
 		api.POST("/question", admin.AddQuestion)
 		api.GET("/user/progress/:id", admin.UserIdProgress)
 		api.GET("/user/progress", admin.AllProgress)
+		api.DELETE("/question/:id", admin.Delete)
 	}
 
 	return r
