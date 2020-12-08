@@ -1,7 +1,7 @@
 <template>
   <div>
-    <b-container>
-      <h2>{{ questionTitle }} <span style="color: gray; font-size: 50%;">(ID: {{ questionId }})</span></h2>
+    <b-container id="question">
+      <h2>{{ questionTitle }} <span style="color: gray; font-size: 50%;">(id: {{ questionId }})</span></h2>
       
       <hr class="my-4">
 
@@ -32,20 +32,24 @@
           <b-alert variant="light" show></b-alert>
         </div>
         <b-row>
-          <b-col sm="7">
+          <b-col sm="6">
             <b-form-input v-model="usersAnswer" type="text" name="usersAnswer" placeholder="ここに答えを入力"></b-form-input>
           </b-col>
-          <b-col sm="3">
+          <b-col sm="2">
             <b-button pill style="float: right" variant="primary" v-on:click="checkAnswer">答えを送信</b-button>
+          </b-col>
+          <b-col>
+            <b-button pill style="float: right" variant="primary" v-on:click="runCode()">▶プログラムを実行</b-button>
           </b-col>
         </b-row>
       </b-container>
-      
+    </b-container>
+    <b-container>
       <BlocklyComponent id="blockly1" :options="options" ref="foo"></BlocklyComponent>
-      <p id="code">
-        <button v-on:click="showCode()">Show JavaScript</button>
-        <pre v-html="code"></pre>
-      </p>
+      <!-- <p id="code"> -->
+        <!-- <button v-on:click="showCode()">Show JavaScript</button> -->
+        <!-- <pre v-html="code"></pre> -->
+      <!-- </p> -->
     </b-container>
   </div>
 </template>
@@ -212,8 +216,13 @@ export default {
         this.visibleId = true;
       }
     },
-    showCode() {
-      this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
+    runCode() {
+      this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace)
+      try {
+        eval(this.code)
+      } catch (e) {
+        alert(e);
+      }
     },
     // 回答チェック
     async checkAnswer() {
@@ -250,21 +259,18 @@ body {
   margin: 0;
 }
 
-#code {
+#question {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 50%;
+  width: 100%;
   height: 50%;
-  margin: 0;
-  background-color: beige;
+
 }
 
 #blockly1 {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 50%;
-  height: 50%;
+  width: 100%;
+  height: 45%;
 }
 </style>
