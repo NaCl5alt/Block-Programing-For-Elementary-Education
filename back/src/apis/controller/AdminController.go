@@ -201,3 +201,5 @@ func (pc AdminController) UserIdProgress(c *gin.Context) {
 
 	c.JSON(http.StatusOK, adf)
 }
+
+//コミット用コメント
