@@ -70,7 +70,9 @@ export default {
   },
   methods: {
     async getQuestionCount() {
-      await Axios.get("/api/question/count")
+      await Axios.get("/api/question/count",{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      })
         .then((res) => {
           this.questionCount = res.data["count"];
         })
@@ -80,7 +82,9 @@ export default {
         });
     },
     async mtFunc() {
-      await Axios.get("/api/user/progress")
+      await Axios.get("/api/user/progress",{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      })
         .then((res) => {
           this.users = res.data["prog"];
           this.users.forEach((user) => {
@@ -117,9 +121,9 @@ export default {
       console.log(this.users[0]);
     },
   },
-  beforeMount() {
-    this.getQuestionCount();
-    this.mtFunc();
+  async beforeMount() {
+    await this.getQuestionCount();
+    await this.mtFunc();
   },
 };
 </script>

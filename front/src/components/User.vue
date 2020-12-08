@@ -70,7 +70,9 @@ export default {
     async mtFunc() {
       this.userId = this.$route.params["id"];
 
-      await Axios.get("/api/user/progress/$(this.id)")
+      await Axios.get(`/api/user/progress/${this.id}`,{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      })
         .then((res) => {
           this.data = res.data["progress"];
         })
@@ -94,7 +96,9 @@ export default {
       }
     },
     async getCount() {
-      await Axios.get("/api/question/count")
+      await Axios.get("/api/question/count",{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      })
         .then((res) => {
           this.max = res.data["count"];
         })
@@ -105,7 +109,9 @@ export default {
     },
     async firstQuestion() {
       var buf_progress = false;
-      await Axios.get("/api/question")
+      await Axios.get("/api/question",{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      })
         .then((res) => {
           buf_progress = this.data.includes(res.data["qid"]);
           this.questions = this.questions.concat({
@@ -130,6 +136,8 @@ export default {
       var buf_progress = false;
       await Axios.get("/api/question/paging", {
         qid: this.end,
+      },{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
       })
         .then((res) => {
           for (let i = this.end + 1; i <= this.end + 50; i++) {

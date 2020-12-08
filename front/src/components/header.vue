@@ -95,35 +95,41 @@ export default {
         console.log('status: ' + res.status)
         if (res.status === 200) {
           this.verify = true
-        }else if(res.status === 401){
+        }
+      }).catch(err => {
+        // console.log(err)
+        if(err.response.status === 401){
           this.verify = false
           this.tokenget()
-        }else {
+        } else {
           this.verify = false
           this.$cookies.remove('token')
           this.$cookies.remove('admin')
-          }
-      }).catch(err => {
-        console.log(err)
-      })
+        }
+     })
     },
     tokenget(){
-      axios.get('/api/token', { withCredentials: true }).then(res => {
-      console.log('status: ' + res.status)
-      if (res.status === 200) {
-            this.$cookies.remove('token')
-            this.$cookies.remove('admin')
-            this.$cookies.set('token', res.data.token)
-            this.$cookies.set('admin', res.data.admin)
-            this.verify = true
-      }else this.verify = false
-      }).catch(err => {
-        console.log(err)
+      axios.get('/api/token', { withCredentials: true,
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      }).then(res => {
+        // console.log('status: ' + res.status)
+        if (res.status === 200) {
+          this.$cookies.remove('token')
+          this.$cookies.remove('admin')
+          this.$cookies.set('token', res.data.token)
+          this.$cookies.set('admin', res.data.admin)
+          this.verify = true
+        }
+      }).catch(() => {
+        // console.log(err)
+        this.$cookies.remove('token')
+        this.$cookies.remove('admin')
+        this.verify = false
       })
-    }
+   }
   },
-  beforeMount () {
-    this.verifyfunc()
+  async beforeMount () {
+    await this.verifyfunc()
   }
 }
 </script>
