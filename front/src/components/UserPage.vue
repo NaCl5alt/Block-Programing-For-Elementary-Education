@@ -28,6 +28,7 @@
 <style scoped>
 #root {
   margin-left: 15%;
+  text-align: left;
 }
 h3 {
   margin-top: 15px;
