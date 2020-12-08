@@ -3,9 +3,6 @@
     <b-container>
       <h2>
         問題一覧
-        <!-- <span style="font-size: 50%; color: gray"
-          >(問題数: {{ end }}/{{ max }})</span
-        > -->
         <b-icon
           id="popover-1"
           icon="exclamation-circle-fill"
@@ -164,7 +161,6 @@ export default {
     },
     checkAdmin() {
       this.isAdmin = this.$cookies.get("admin");
-      // this.isAdmin = true;
     },
   },
   beforeMount() {
