@@ -160,7 +160,9 @@ export default {
       console.log(this.questions);
     },
     checkAdmin() {
-      this.isAdmin = this.$cookies.get("admin");
+      if (this.$cookies.get("admin") == "true") {
+        this.isAdmin = true;
+      }
     },
   },
   beforeMount() {
