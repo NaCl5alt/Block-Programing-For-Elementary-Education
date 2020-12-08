@@ -112,15 +112,16 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-      axios.post('/api/token', {}, { 
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
-      }).then(() => {
-      // if (res.data.token) this.$cookies.set('token', res.data.token)
-      next()
+    let token = ''
+    if(window.$cookies.isKey('token')) token = window.$cookies.get('token')
+    axios.post('/api/token', {}, { 
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(() => {
+    // if (res.data.token) this.$cookies.set('token', res.data.token)
+    next()
     }).catch(() => {
-      //next({ path: '/login', query: { redirect: to.fullPath } })
-      next()
+      next({ path: '/login', query: { redirect: to.fullPath } })
     })
   } else next()
 })
