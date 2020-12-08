@@ -11,7 +11,7 @@
 
     <div class="section1 text-right" style="float: right;">
 
-      <span v-if='token!==null && admin!=="true"'>
+      <span v-show='token !== null && admin !== "true"'>
       <b-button squared
       size="lg"
       variant="success"
@@ -36,7 +36,7 @@
       >ログアウト
       </b-button>
       </span>
-      <span v-else-if='token!==null && admin == "true" '>
+      <span v-show='token!==null && admin === "true" '>
       <b-button squared
       size="lg"
       variant="success"
@@ -52,7 +52,7 @@
       >ログアウト
       </b-button>
       </span>
-      <span v-else>
+      <span v-show='token === null && (admin === "false" || admin === null)'>
         <b-button squared
         size="lg"
         variant="success"

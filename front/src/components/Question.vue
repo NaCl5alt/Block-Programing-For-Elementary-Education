@@ -171,8 +171,11 @@ export default {
     async mtFunc() {
       this.questionId = this.$route.params["id"];
 
-      await Axios.get("/api/question/$(this.questionId)")
+      await Axios.get(`/api/question/contents/${this.questionId}`,{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      })
         .then((res) => {
+          console.log(res.data)
           var bufHints = [];
           var bufStr0 = "";
           var bufStr1 = "";
@@ -216,7 +219,9 @@ export default {
         });
     },
     async showHint(questionId) {
-      await Axios.get("/api/question/$(this.questionId)")
+      await Axios.get(`/api/question/${this.questionId}`,{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      })
         .then((res) => {
           this.visibleHint = res.data["hints"][questionId];
         })
@@ -240,8 +245,10 @@ export default {
     },
     // 回答チェック
     async checkAnswer() {
-      await Axios.post("/api/question$(this.questionId)", {
+      await Axios.post(`/api/question/${this.questionId}`, {
         answer: this.usersAnswer,
+      },{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
       })
         .then((res) => {
           if (res.data["accept"]) {

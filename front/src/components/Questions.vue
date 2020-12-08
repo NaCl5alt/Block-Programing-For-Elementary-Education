@@ -46,20 +46,20 @@
             </b-tr>
           </b-thead>
           <b-tbody>
-            <b-tr v-for="q in questions" :key="q.id">
-              <b-td class="text-right">{{ q.id }}</b-td>
+            <b-tr v-for="q in questions" :key="q.qid">
+              <b-td class="text-right">{{ q.qid }}</b-td>
               <b-td class="text-right">{{ q.title }}</b-td>
               <b-td>
                 <router-link
                   v-if="q.progress"
                   class="btn btn-info"
-                  :to="{ name: 'Question', params: { id: q.id } }"
+                  :to="{ name: 'Question', params: { id: q.qid } }"
                   >トライ!</router-link
                 >
                 <router-link
                   v-else
                   class="btn btn-success"
-                  :to="{ name: 'Question', params: { id: q.id } }"
+                  :to="{ name: 'Question', params: { id: q.qid } }"
                   ><b-icon icon="star"></b-icon> 完了</router-link
                 >
               </b-td>
@@ -91,7 +91,7 @@ export default {
     return {
       questions: [],
       fields: [
-        { key: "id", label: "No." },
+        { key: "qid", label: "No." },
         { key: "title", label: "問題名" },
       ],
       end: 0,
@@ -134,7 +134,7 @@ export default {
         .catch((error) => {
           console.log(error);
           this.questions = this.questions.concat({
-            id: 1,
+            qid: 1,
             title: "[TEST] Title",
             progress: false,
           });
@@ -158,7 +158,7 @@ export default {
             if (i <= this.max) {
               test = Boolean(Math.round(Math.random()));
               this.questions = this.questions.concat({
-                id: i,
+                qid: i,
                 title: "[TEST] Title",
                 progress: test,
               });
