@@ -27,8 +27,8 @@ export default {
     }
   },
   methods: {
-    regist () {
-      axios.post('/api/user', {
+    async regist () {
+      await axios.post('/api/user', {
         userid: this.userid,
         password: this.password
       }).then(res => {
@@ -38,8 +38,8 @@ export default {
         console.log(error)
       })
     },
-    check () {
-      axios.post('/api/user/check', {
+    async check () {
+      await axios.post('/api/user/check', {
         userid: this.userid,
       }).then(res => {
         console.log(res)
@@ -48,13 +48,13 @@ export default {
         console.log(error)
       })
     },
-    click () {
+    async click () {
       if (this.userid !== '' && this.password !== '') {
-        this.check()
+        await this.check()
         if (this.erroruserid_used === false) {
           this.erroruserid = false
           this.errorpassword = false
-          this.regist()
+          await this.regist()
         }
       }
       else if (this.userid === '' && this.password === '') {

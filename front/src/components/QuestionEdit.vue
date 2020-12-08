@@ -170,7 +170,9 @@ export default {
     async mtFunc() {
       this.id = this.$route.params["id"];
 
-      await Axios.get("/api/question/$(this.id)")
+      await Axios.get(`/api/question/contents/${this.id}`,{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      })
         .then((res) => {
           this.title = res.data["title"];
           this.content = res.data["content"];
@@ -196,7 +198,7 @@ export default {
       this.editable_hintCount = this.hints.length;
     },
     async edit() {
-      await Axios.post("/api/question/&(id)", {
+      await Axios.post(`/api/question/${this.id}`, {
         title: this.title,
         content: this.content,
         answer: this.answer,
@@ -228,7 +230,9 @@ export default {
     async deleteThis() {
       console.log("編集");
       this.$bvModal.hide("modal-1");
-      await Axios.delete("/question/$(id)")
+      await Axios.delete(`/question/${this.id}`,{
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      })
         .then((res) => {
           switch (res.status) {
             case 200:

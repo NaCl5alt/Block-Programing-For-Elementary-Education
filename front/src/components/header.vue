@@ -12,14 +12,23 @@
     <div class="section1 text-right" style="float: right;">
 
       <span v-if='token!==null && admin!=="true"'>
-      <!--<b-button squared
+      <b-button squared
       size="lg"
       variant="success"
       style="width:200px; height:50px;"
       href="/user"
+      v-if='admin!=="true"'
       >ユーザーページ
-      </b-button>-->
+      </b-button>
       <b-button squared
+      size="lg"
+      variant="success"
+      style="width:200px; height:50px;"
+      href="/admin"
+      v-else
+      >管理者ページ
+      </b-button>
+ <b-button squared
       size="lg"
       variant="danger"
       style="width:200px; height:50px;"
@@ -71,7 +80,6 @@
 <script>
 import axios from 'axios'
 export default {
-
   data () {
     return {
     token:this.$cookies.get('token'),
@@ -79,46 +87,43 @@ export default {
     }
   },
   methods:{
-  verifyfunc () {
-  this.$nextTick(() => {
-    axios.defaults.headers.common["Authorization"] = 
-      "Bearer " + this.$cookies.get("token");
-    axios.post('/api/token', { withCredentials: true }).then(res => {
+    verifyfunc () {
+      axios.post('/api/token', {}, { 
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      }).then(res => {
+        console.log('status: ' + res.status)
+        if (res.status === 200) {
+          this.verify = true
+        }else if(res.status === 401){
+          this.verify = false
+          this.tokenget()
+        }else {
+          this.verify = false
+          this.$cookies.remove('token')
+          this.$cookies.remove('admin')
+          }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    tokenget(){
+      axios.get('/api/token', { withCredentials: true }).then(res => {
       console.log('status: ' + res.status)
       if (res.status === 200) {
-        this.verify = true
-      }else if(res.status === 401){
-        this.verify = false
-        this.tokenget()
-      }else {
-        this.verify = false
-        this.$cookies.remove('token')
-        this.$cookies.remove('admin')
-        }
-    }).catch(err => {
-      console.log(err)
-    })
-  })
-},
-tokenget(){
-this.$nextTick(()=> {
-axios.get('/api/token', { withCredentials: true }).then(res => {
-  console.log('status: ' + res.status)
-  if (res.status === 200) {
-        this.$cookies.remove('token')
-        this.$cookies.remove('admin')
-        this.$cookies.set('token', res.data.token)
-        this.$cookies.set('admin', res.data.admin)
-        this.verify = true
-  }else this.verify = false
-}).catch(err => {
-  console.log(err)
-})
-})
-},
-beforeMount () {
-  this.verifyfunc()
-}
-}
+            this.$cookies.remove('token')
+            this.$cookies.remove('admin')
+            this.$cookies.set('token', res.data.token)
+            this.$cookies.set('admin', res.data.admin)
+            this.verify = true
+      }else this.verify = false
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  },
+  beforeMount () {
+    this.verifyfunc()
+  }
 }
 </script>

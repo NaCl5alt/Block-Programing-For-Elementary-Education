@@ -11,9 +11,14 @@ import QuestionAdd from '../components/QuestionAdd'
 import QuestionEdit from '../components/QuestionEdit'
 import User from '../components/User'
 import Users from '../components/Users'
+import UserPage from '../components/UserPage'
 import Admin from '../components/Admin'
 import AdminQuestions from '../components/AdminQuestions'
 import Logout from '../components/Logout'
+import ChangeID from '../components/ChangeID.vue'
+import ChangeName from '../components/ChangeName.vue'
+import ChangePasswd from '../components/ChangePasswd.vue'
+import DeleteUser from '../components/DeleteUser.vue'
 
 Vue.use(VueRouter)
 
@@ -70,6 +75,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/user',
+    name: 'UserPage',
+    component: UserPage,
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/admin/user',
     name: 'Users',
     component: Users,
@@ -85,7 +96,12 @@ const routes = [
     path: '/logout',
     name: 'Logout',
     component: Logout
-  }
+  },
+  { path: '/id', component: ChangeID, name: 'ユーザID変更', meta: { requiresAuth: true } },
+  { path: '/name', component: ChangeName, name: 'ユーザ名変更', meta: { requiresAuth: true } },
+  { path: '/passwd', component: ChangePasswd, name: 'パスワード変更', meta: { requiresAuth: true } },
+  { path: '/delete', component: DeleteUser, name: 'ユーザ削除', meta: { requiresAuth: true } },
+ 
 ]
 
 const router = new VueRouter({
@@ -96,12 +112,16 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    axios.post('/apis/token', { withCredentials: true }).then(() => {
-      // if (res.data.token) this.$cookies.set('token', res.data.token)
-      next()
+    let token = ''
+    if(window.$cookies.isKey('token')) token = window.$cookies.get('token')
+    axios.post('/api/token', {}, { 
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(() => {
+    // if (res.data.token) this.$cookies.set('token', res.data.token)
+    next()
     }).catch(() => {
-      //next({ path: '/login', query: { redirect: to.fullPath } })
-      next()
+      next({ path: '/login', query: { redirect: to.fullPath } })
     })
   } else next()
 })
