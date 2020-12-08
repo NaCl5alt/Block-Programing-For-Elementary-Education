@@ -43,3 +43,5 @@ func SetRouter(db *gorm.DB) *gin.Engine {
 
 	return r
 }
+
+//コミット用コメント
