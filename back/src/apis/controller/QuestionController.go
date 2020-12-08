@@ -5,19 +5,21 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	jwt "github.com/dgrijalva/jwt-go"
+
 	"../auth"
 	"../db"
 	"../model"
+
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
 type QuestionController struct{}
 
 type QuestionResponse struct {
-	Id    int    `json:"qid"`
-	Title string `json:"title"`
-	Progress bool `json:"progress"`
+	Id       int    `json:"qid"`
+	Title    string `json:"title"`
+	Progress bool   `json:"progress"`
 }
 type CountResponse struct {
 	Count int `json:"count"`
@@ -46,6 +48,12 @@ type Json struct {
 	Question_Id int `json:"qid"`
 }
 
+type PagingResponse struct {
+	Question_Id    int    `json:"qid"`
+	Question_Title string `json:"title"`
+	Progress       bool   `json:""progress`
+}
+
 func (pc QuestionController) Get(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
@@ -59,7 +67,7 @@ func (pc QuestionController) Get(c *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
-	
+
 	problem := model.Problem{}
 	db.First(&problem)
 
@@ -68,7 +76,7 @@ func (pc QuestionController) Get(c *gin.Context) {
 
 	progress := []model.Progress{}
 	db.Find(&progress, "user_id=?", user.ID)
-	
+
 	count := 0
 	db.Where("user_id=? AND pro_id=?", user.ID, problem.ID).Find(&progress).Count(&count)
 
@@ -80,8 +88,8 @@ func (pc QuestionController) Get(c *gin.Context) {
 	}
 
 	adf := QuestionResponse{
-		Id:    int(problem.ID),
-		Title: problem.Pro_Title,
+		Id:       int(problem.ID),
+		Title:    problem.Pro_Title,
 		Progress: match,
 	}
 
@@ -136,7 +144,7 @@ func (pc QuestionController) Answer(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	_, err := auth.VerifyToken(tokenString)
+	token, err := auth.VerifyToken(tokenString)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
@@ -159,6 +167,21 @@ func (pc QuestionController) Answer(c *gin.Context) {
 	accept := false
 	if problem.Pro_Answer == json.Answer {
 		accept = true
+
+		claims := token.Claims.(jwt.MapClaims)
+
+		user := model.User{}
+		user.User_Id = claims["user"].(string)
+		db.First(&user)
+
+		progress := model.Progress{}
+		progress.Pro_Id = int(problem.ID)
+		progress.User_Id = int(user.ID)
+
+		if db.Where(&model.Progress{Pro_Id: int(problem.ID), User_Id: int(user.ID)}).First(&progress).RecordNotFound() {
+			db.Create(&progress)
+		}
+
 	} else {
 		accept = false
 	}
@@ -197,11 +220,12 @@ func (pc QuestionController) PagingGet(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	_, err := auth.VerifyToken(tokenString)
+	token, err := auth.VerifyToken(tokenString)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
+	claims := token.Claims.(jwt.MapClaims)
 
 	json := Json{}
 	if err := c.ShouldBindJSON(&json); err != nil {
@@ -211,9 +235,31 @@ func (pc QuestionController) PagingGet(c *gin.Context) {
 
 	db := db.GormConnect()
 	problem := []model.Problem{}
+	res := []PagingResponse{}
+
+	user := model.User{}
+	db.First(&user, "user_id=?", claims["user"])
 
 	qid := 1
 	db.Limit(50).Where("ID >= ?", qid).Find(&problem)
 
-	c.JSON(http.StatusOK, problem)
+	for _, h := range problem {
+		count := 0
+		progress := model.Progress{}
+		db.Where("user_id=? AND pro_id=?", user.ID, h.ID).Find(&progress).Count(&count)
+		fmt.Print(count)
+
+		match := false
+		if count == 0 {
+			match = false
+		} else {
+			match = true
+		}
+		res = append(res, PagingResponse{
+			int(h.ID),
+			h.Pro_Title,
+			match,
+		})
+	}
+	c.JSON(http.StatusOK, res)
 }
