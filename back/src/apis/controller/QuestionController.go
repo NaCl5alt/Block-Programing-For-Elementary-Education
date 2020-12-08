@@ -5,11 +5,12 @@ import (
 	"../db"
 	"../model"
 	"fmt"
-	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"strings"
+
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 type QuestionController struct{}
@@ -142,7 +143,7 @@ func (pc QuestionController) Answer(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	_, err := auth.VerifyToken(tokenString)
+	token, err := auth.VerifyToken(tokenString)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
@@ -165,6 +166,21 @@ func (pc QuestionController) Answer(c *gin.Context) {
 	accept := false
 	if problem.Pro_Answer == json.Answer {
 		accept = true
+
+		claims := token.Claims.(jwt.MapClaims)
+
+		user := model.User{}
+		user.User_Id = claims["user"].(string)
+		db.First(&user)
+
+		progress := model.Progress{}
+		progress.Pro_Id = int(problem.ID)
+		progress.User_Id = int(user.ID)
+
+		if db.First(&progress).RecordNotFound() {
+			db.Create(&progress)
+		}
+
 	} else {
 		accept = false
 	}
