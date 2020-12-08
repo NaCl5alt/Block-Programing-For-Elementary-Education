@@ -144,7 +144,7 @@ export default {
         qid: this.end,
       })
         .then((res) => {
-          this.questions = this.questions.concat(res.data);
+          this.questions.push(res.data);
         })
         .catch((error) => {
           console.log(error);
@@ -163,8 +163,8 @@ export default {
       console.log(this.questions);
     },
     checkAdmin() {
-      // this.isAdmin = this.$cookies.get("admin");
-      this.isAdmin = true;
+      this.isAdmin = this.$cookies.get("admin");
+      // this.isAdmin = true;
     },
   },
   beforeMount() {

@@ -25,7 +25,9 @@
               <b-td class="text-right">{{ q.id }}</b-td>
               <b-td class="text-right">{{ q.title }}</b-td>
               <b-td>
-                <p v-if="q.progress"><b-icon icon="star"></b-icon> 完了</p>
+                <p v-if="q.progress" style="font-weight: bold; color: green">
+                  <b-icon icon="star"></b-icon> 完了
+                </p>
                 <p v-else>未完了</p>
               </b-td>
             </b-tr>
@@ -54,7 +56,7 @@ export default {
   data() {
     return {
       userId: 0,
-      data: [],
+      data: [], // ユーザの達成済みの問題ID
       questions: [],
       fields: [
         { key: "id", label: "No. " },
@@ -75,15 +77,15 @@ export default {
         .catch((error) => {
           console.log(error);
           var test_data = {
-            progress: [1, 2, 3, 4],
+            progress: [1, 2, 3, 4, 30],
           };
           this.data = test_data["progress"];
         });
     },
     async infiniteHandler($state) {
       if (this.end === 0) await this.firstQuestion();
-      console.log(this.end);
-      console.log(this.max);
+      // console.log(this.end);
+      // console.log(this.max);
       if (this.end >= this.max) {
         $state.complete();
       } else {
@@ -102,42 +104,54 @@ export default {
         });
     },
     async firstQuestion() {
+      var buf_progress = false;
       await Axios.get("/api/question")
         .then((res) => {
+          buf_progress = this.data.includes(res.data["qid"]);
           this.questions = this.questions.concat({
             id: res.data["qid"],
             title: res.data["title"],
-            progress: res.data["progress"],
+            progress: buf_progress,
           });
         })
         .catch((error) => {
           console.log(error);
+          buf_progress = this.data.includes(1);
           this.questions = this.questions.concat({
             id: 1,
             title: "[TEST] Title",
-            progress: true,
+            progress: buf_progress,
           });
         });
       this.end = this.questions.length;
       console.log(this.questions);
     },
     async getQuestions() {
-      var test = false;
+      var buf_progress = false;
       await Axios.get("/api/question/paging", {
         qid: this.end,
       })
         .then((res) => {
-          this.questions = this.questions.concat(res.data);
+          for (let i = this.end + 1; i <= this.end + 50; i++) {
+            if (i <= this.max) {
+              buf_progress = this.data.includes(res.data[i]["qid"]);
+              this.questions.push({
+                id: res.data[i]["id"],
+                title: res.data[i]["title"],
+                progress: buf_progress,
+              });
+            }
+          }
         })
         .catch((error) => {
           console.log(error);
           for (let i = this.end + 1; i <= this.end + 50; i++) {
             if (i <= this.max) {
-              test = Boolean(Math.round(Math.random()));
+              buf_progress = this.data.includes(i);
               this.questions = this.questions.concat({
                 id: i,
                 title: "[TEST] Title",
-                progress: test,
+                progress: buf_progress,
               });
             }
           }

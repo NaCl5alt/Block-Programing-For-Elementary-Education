@@ -1,56 +1,95 @@
 <template>
   <div>
-    <b-container id="question">
-      <h2>{{ questionTitle }} <span style="color: gray; font-size: 50%;">(id: {{ questionId }})</span></h2>
-      
-      <hr class="my-4">
-
-      <p>{{ questionContent }}</p>
-
-      <div role="hintlist">
-        <ul style="list-style: none;">
-          <div v-for="h in questionsHints" :key="h.id">
-            <li style="float: left; margin: 10px;">
-              <b-button pill v-b-toggle.collapse variant="info" @click="showHint(h.id)">{{ h.title }}</b-button>
-            </li>
-          </div>
-        </ul>
-        <p><br><br></p>
-        <div>
-          <b-collapse id="collapse" v-model="visible">
-            <b-card>{{ visibleHint }}</b-card>
-          </b-collapse>
-        </div>
-      </div>
-
-      <b-container>
-        <div v-if="showAnswer">
-          <b-alert variant="success" v-if="visibleAnswer" show>正解!!</b-alert>
-          <b-alert variant="danger" v-else show>間違い!!</b-alert>
-        </div>
-        <div v-else>
-          <b-alert variant="light" show></b-alert>
-        </div>
+    <b-containter fluid>
+      <b-container id="question" style="width: 100%; height: 50%">
         <b-row>
-          <b-col sm="6">
-            <b-form-input v-model="usersAnswer" type="text" name="usersAnswer" placeholder="ここに答えを入力"></b-form-input>
-          </b-col>
-          <b-col sm="2">
-            <b-button pill style="float: right" variant="primary" v-on:click="checkAnswer">答えを送信</b-button>
+          <b-col>
+            <div>
+              <h2>
+                {{ questionTitle }}
+                <span style="color: gray; font-size: 50%"
+                  >(id: {{ questionId }})</span
+                >
+              </h2>
+              <hr class="my-4" />
+              <p>{{ questionContent }}</p>
+              <div role="hintlist">
+                <ul style="list-style: none">
+                  <div v-for="h in questionsHints" :key="h.id">
+                    <li style="float: left; margin: 10px">
+                      <b-button
+                        pill
+                        v-b-toggle.collapse
+                        variant="info"
+                        @click="showHint(h.id)"
+                        >{{ h.title }}</b-button
+                      >
+                    </li>
+                  </div>
+                </ul>
+                <p><br /><br /></p>
+                <div>
+                  <b-collapse id="collapse" v-model="visible">
+                    <b-card>{{ visibleHint }}</b-card>
+                  </b-collapse>
+                </div>
+              </div>
+            </div>
           </b-col>
           <b-col>
-            <b-button pill style="float: right" variant="primary" v-on:click="runCode()">▶プログラムを実行</b-button>
+            <div>
+              <b-row>
+                <b-col>
+                  <b-form-input
+                    v-model="usersAnswer"
+                    type="text"
+                    name="usersAnswer"
+                    placeholder="ここに答えを入力"
+                  ></b-form-input>
+                  <br />
+                  <b-button
+                    pill
+                    style="float: right"
+                    variant="primary"
+                    v-on:click="checkAnswer"
+                    >答えを送信</b-button
+                  >
+                </b-col>
+              </b-row>
+              <div v-if="showAnswer">
+                <b-alert variant="success" v-if="visibleAnswer" show
+                  >正解!!</b-alert
+                >
+                <b-alert variant="danger" v-else show>間違い!!</b-alert>
+              </div>
+              <div v-else>
+                <b-alert variant="light" show></b-alert>
+              </div>
+              <b-row>
+                <b-button
+                  pill
+                  style="float: right"
+                  variant="primary"
+                  v-on:click="runCode()"
+                  >▶プログラムを実行</b-button
+                >
+              </b-row>
+            </div>
           </b-col>
         </b-row>
       </b-container>
-    </b-container>
-    <b-container>
-      <BlocklyComponent id="blockly1" :options="options" ref="foo"></BlocklyComponent>
-      <!-- <p id="code"> -->
+      <b-container>
+        <BlocklyComponent
+          id="blockly1"
+          :options="options"
+          ref="foo"
+        ></BlocklyComponent>
+        <!-- <p id="code"> -->
         <!-- <button v-on:click="showCode()">Show JavaScript</button> -->
         <!-- <pre v-html="code"></pre> -->
-      <!-- </p> -->
-    </b-container>
+        <!-- </p> -->
+      </b-container>
+    </b-containter>
   </div>
 </template>
 
@@ -217,9 +256,9 @@ export default {
       }
     },
     runCode() {
-      this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace)
+      this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
       try {
-        eval(this.code)
+        eval(this.code);
       } catch (e) {
         alert(e);
       }
@@ -259,12 +298,11 @@ body {
   margin: 0;
 }
 
-#question {
+/* #question {
   position: absolute;
   width: 100%;
   height: 50%;
-
-}
+} */
 
 #blockly1 {
   position: absolute;
