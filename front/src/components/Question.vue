@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-container>
+    <b-container id="question">
       <h2>{{ questionTitle }} <span style="color: gray; font-size: 50%;">(id: {{ questionId }})</span></h2>
       
       <hr class="my-4">
@@ -34,14 +34,16 @@
       </div>
 
       <b-container>
-        <b-button pill style="float: right" variant="primary" v-on:click="checkAnswer">答えを送信</b-button>
+        <b-button pill style="float: right" variant="primary" v-on:click="runCode()">▶プログラムを実行</b-button>
+        <b-button pill style="float: right;margin-right:10px;" variant="primary" v-on:click="checkAnswer">答えを送信</b-button>
       </b-container>
-      
+    </b-container>
+    <b-container>
       <BlocklyComponent id="blockly1" :options="options" ref="foo"></BlocklyComponent>
-      <p id="code">
-        <button v-on:click="showCode()">Show JavaScript</button>
-        <pre v-html="code"></pre>
-      </p>
+      <!-- <p id="code"> -->
+        <!-- <button v-on:click="showCode()">Show JavaScript</button> -->
+        <!-- <pre v-html="code"></pre> -->
+      <!-- </p> -->
     </b-container>
   </div>
 </template>
@@ -207,8 +209,13 @@ export default {
         this.visibleId = true;
       }
     },
-    showCode() {
-      this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
+    runCode() {
+      this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace)
+      try {
+        eval(this.code)
+      } catch (e) {
+        alert(e);
+      }
     },
     async checkAnswer() {
       await Axios.post("/api/question$(this.questionId)", {
@@ -244,21 +251,18 @@ body {
   margin: 0;
 }
 
-#code {
+#question {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 50%;
+  width: 100%;
   height: 50%;
-  margin: 0;
-  background-color: beige;
+
 }
 
 #blockly1 {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 50%;
-  height: 50%;
+  width: 100%;
+  height: 45%;
 }
 </style>
