@@ -9,15 +9,22 @@ import (
 	"../auth"
 	"../db"
 	"../model"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
 type QuestionController struct{}
 
 type QuestionResponse struct {
+<<<<<<< Updated upstream
 	Id    int    `json:"qid"`
 	Title string `json:"title"`
 	Progress bool `json:"progress"`
+=======
+	Id       int    `json:"qid"`
+	Title    string `json:"title"`
+	Progress bool   `json:"progress"`
+>>>>>>> Stashed changes
 }
 type CountResponse struct {
 	Count int `json:"count"`
@@ -59,7 +66,11 @@ func (pc QuestionController) Get(c *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
+<<<<<<< Updated upstream
 	
+=======
+
+>>>>>>> Stashed changes
 	problem := model.Problem{}
 	db.First(&problem)
 
@@ -68,7 +79,11 @@ func (pc QuestionController) Get(c *gin.Context) {
 
 	progress := []model.Progress{}
 	db.Find(&progress, "user_id=?", user.ID)
+<<<<<<< Updated upstream
 	
+=======
+
+>>>>>>> Stashed changes
 	count := 0
 	db.Where("user_id=? AND pro_id=?", user.ID, problem.ID).Find(&progress).Count(&count)
 
@@ -80,8 +95,13 @@ func (pc QuestionController) Get(c *gin.Context) {
 	}
 
 	adf := QuestionResponse{
+<<<<<<< Updated upstream
 		Id:    int(problem.ID),
 		Title: problem.Pro_Title,
+=======
+		Id:       int(problem.ID),
+		Title:    problem.Pro_Title,
+>>>>>>> Stashed changes
 		Progress: match,
 	}
 
@@ -136,7 +156,7 @@ func (pc QuestionController) Answer(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	_, err := auth.VerifyToken(tokenString)
+	token, err := auth.VerifyToken(tokenString)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
@@ -159,6 +179,21 @@ func (pc QuestionController) Answer(c *gin.Context) {
 	accept := false
 	if problem.Pro_Answer == json.Answer {
 		accept = true
+
+		claims := token.Claims.(jwt.MapClaims)
+
+		user := model.User{}
+		user.User_Id = claims["user"].(string)
+		db.First(&user)
+
+		progress := model.Progress{}
+		progress.Pro_Id = int(problem.ID)
+		progress.User_Id = int(user.ID)
+
+		if db.First(&progress).RecordNotFound() {
+			db.Create(&progress)
+		}
+
 	} else {
 		accept = false
 	}
