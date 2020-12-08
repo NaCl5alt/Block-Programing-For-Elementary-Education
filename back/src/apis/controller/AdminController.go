@@ -87,6 +87,48 @@ func (pc AdminController) Delete(c *gin.Context) {
 	c.String(http.StatusCreated, "complete delete")
 }
 
+func (pc AdminController) EditQuestion(c *gin.Context) {
+	tokenString := c.Request.Header.Get("Authorization")
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+
+	_, err := auth.VerifyToken(tokenString)
+	if err != nil {
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	edit := QuestionRequest{}
+	err = c.BindJSON(&edit)
+	if err != nil {
+		c.String(http.StatusBadRequest, "request failed(json error)")
+	}
+
+	db := db.GormConnect()
+	problem := model.Problem{}
+	u64, err := strconv.ParseUint(c.Param("id"), 10, 0)
+	problem.ID = uint(u64)
+
+	problem_after := problem
+	db.First(&problem_after)
+	problem_after.Pro_Title = edit.Title
+	problem_after.Pro_Content = edit.Content
+	problem_after.Pro_Answer = edit.Answer
+	db.Model(&problem).Update(problem_after)
+	db.Save(&problem_after)
+	c.String(http.StatusCreated, "complete edit")
+
+	hint := model.Hint{}
+	db.Where("pro_id=?", problem.ID).Delete(&hint)
+	for _, h := range edit.Hints {
+		hint_after := model.Hint{}
+		hint_after.Hint = h.Hint
+		hint_after.Pro_Id = int(problem.ID)
+		db.Create(&hint_after)
+	}
+	c.String(http.StatusCreated, "complete edit")
+
+}
+
 func (pc AdminController) AllProgress(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")

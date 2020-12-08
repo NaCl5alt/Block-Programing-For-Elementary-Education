@@ -30,11 +30,12 @@ func SetRouter(db *gorm.DB) *gin.Engine {
 
 		api.GET("/question", question.Get)
 		api.GET("/question/contents/:id", question.Contents)
-		api.POST("/question/:id", question.Answer)
+		api.POST("/question/answer/:id", question.Answer)
 		api.GET("/question/count", question.CountGet)
 		api.GET("/question/paging", question.PagingGet)
 
 		api.POST("/question", admin.AddQuestion)
+		api.POST("question/edit", admin.EditQuestion)
 		api.GET("/user/progress/:id", admin.UserIdProgress)
 		api.GET("/user/progress", admin.AllProgress)
 		api.DELETE("/question/:id", admin.Delete)
