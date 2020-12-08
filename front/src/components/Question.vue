@@ -90,8 +90,6 @@
 </template>
 
 <script>
-
-
 import BlocklyComponent from "./BlocklyComponent.vue";
 import "../blocks/stocks";
 import "../prompt";
@@ -111,8 +109,8 @@ export default {
       questionTitle: "",
       questionContent: "",
       questionsHints: [],
-      visibleId: 0,
-      visibleHint: "",
+      visibleId: 0, // 表示するヒントの番号
+      visibleHint: "", // 表示しているヒント
       visible: false,
       usersAnswer: "",
       visibleAnswer: false, // 正誤判定のフラグ
@@ -171,16 +169,16 @@ export default {
     async mtFunc() {
       this.questionId = this.$route.params["id"];
 
-      await Axios.get(`/api/question/contents/${this.questionId}`,{
-        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      await Axios.get(`/api/question/contents/${this.questionId}`, {
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` },
       })
         .then((res) => {
-          console.log(res.data)
+          // console.log(res.data)
           var bufHints = [];
           var bufStr0 = "";
           var bufStr1 = "";
-          this.questionTitle = res.data["title"];
-          this.questionContent = res.data["content"];
+          this.questionTitle = res.data["title"]; // タイトルを格納
+          this.questionContent = res.data["content"]; // 問題文を格納
           for (let i = 0; i < res.data["hints"].length; i++) {
             bufStr0 = "collapse-" + i;
             bufStr1 = "ヒント " + i;
@@ -192,13 +190,16 @@ export default {
             });
           }
           if (res.data["hints"][0] == null) {
+            // ヒントが無い問題
             this.visibleHint = "空";
           } else {
+            // ヒントがあればとりあえず最初のを入れる
             this.visibleHint = res.data["hints"][0];
           }
           this.questionsHints = bufHints;
         })
         .catch((error) => {
+          // エラー処理
           this.questionTitle = "[ERROR] ページが存在しません。";
           this.questionContent = "[ERROR]";
           this.questionsHints = [
@@ -218,24 +219,26 @@ export default {
           console.log(error);
         });
     },
-    async showHint(questionId) {
-      await Axios.get(`/api/question/${this.questionId}`,{
-        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
-      })
-        .then((res) => {
-          this.visibleHint = res.data["hints"][questionId];
-        })
-        .catch((error) => {
-          this.visibleHint = "[ERROR] " + questionId;
-          console.log(error);
-        });
-      if (questionId != this.visibleId) {
+    async showHint(hintId) {
+      this.visibleHint = this.questionsHints[hintId];
+      // await Axios.get(`/api/question/contents/${this.questionId}`, {
+      //   headers: { Authorization: `Bearer ${this.$cookies.get("token")}` },
+      // })
+      //   .then((res) => {
+      //     this.visibleHint = res.data["hints"][questionId];
+      //   })
+      //   .catch((error) => {
+      //     this.visibleHint = "[ERROR] " + questionId;
+      //     console.log(error);
+      //   });
+      if (hintId != this.visibleId) {
         this.visibleId = !this.visibleId;
       } else {
         this.visibleId = true;
       }
     },
     runCode() {
+      // コードの実行
       this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
       try {
         eval(this.code);
@@ -245,11 +248,15 @@ export default {
     },
     // 回答チェック
     async checkAnswer() {
-      await Axios.post(`/api/question/${this.questionId}`, {
-        answer: this.usersAnswer,
-      },{
-        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
-      })
+      await Axios.post(
+        `/api/question/${this.questionId}`,
+        {
+          answer: this.usersAnswer,
+        },
+        {
+          headers: { Authorization: `Bearer ${this.$cookies.get("token")}` },
+        }
+      )
         .then((res) => {
           if (res.data["accept"]) {
             // 正解だった時
