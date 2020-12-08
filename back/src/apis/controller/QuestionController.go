@@ -1,13 +1,14 @@
 package controller
 
 import (
-	"../auth"
-	"../db"
-	"../model"
 	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"../auth"
+	"../db"
+	"../model"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -177,7 +178,7 @@ func (pc QuestionController) Answer(c *gin.Context) {
 		progress.Pro_Id = int(problem.ID)
 		progress.User_Id = int(user.ID)
 
-		if db.First(&progress).RecordNotFound() {
+		if db.Where(&model.Progress{Pro_Id: int(problem.ID), User_Id: int(user.ID)}).First(&progress).RecordNotFound() {
 			db.Create(&progress)
 		}
 
