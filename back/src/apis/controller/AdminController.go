@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
 
 	"../auth"
@@ -22,6 +22,21 @@ type ProgressUserId struct {
 	UserId     int   `json:"uid"`
 	QuestionId []int `json:"progress"`
 }
+
+type QuestionHintDetail struct {
+	Hint string `json:"hint"`
+}
+
+type QuestionDetail struct {
+	Title   string         `json:"title"`
+	Content string         `json:"content"`
+	Answer string `json:"answer"`
+	Hints   []QuestionHint `json:"hints"`
+}
+
+// type AnswerJson struct {
+	// Answer string `json:"answer"`
+// }
 
 func (pc AdminController) AllProgress(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
@@ -95,3 +110,60 @@ func (pc AdminController) UserIdProgress(c *gin.Context) {
 
 	c.JSON(http.StatusOK, adf)
 }
+
+func (pc AdminController) DetailGET(c *gin.Context) {
+	/*
+	tokenString := c.Request.Header.Get("Authorization")
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+
+	fmt.Println("debug")
+
+	_, err := auth.VerifyToken(tokenString)
+	if err != nil {
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+*/
+	db := db.GormConnect()
+	problem := model.Problem{}
+	hints := []model.Hint{}
+
+	fmt.Println("debug")
+
+
+	u64, _ := strconv.ParseUint(c.Param("id"), 10, 0)
+	problem.ID = uint(u64)
+
+	db.First(&problem)
+
+	db.Where(model.Hint{
+		Pro_Id: int(problem.ID),
+	}).Find(&hints)
+	
+	json := AnswerJson{}
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	res_hints := []QuestionHint{}
+
+	for _, h := range hints {
+		res_hints = append(res_hints, QuestionHint{
+			Hint: h.Hint,
+		})
+	}
+
+	fmt.Println("qid:" + c.Param("id"))
+
+	adf := QuestionDetail{
+		Title:   problem.Pro_Title,
+		Content: problem.Pro_Content,
+		Answer: problem.Pro_Answer,
+		Hints:   res_hints,
+	}
+
+	c.JSON(http.StatusOK, adf)
+}
+
+
