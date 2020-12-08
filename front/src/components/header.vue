@@ -12,13 +12,22 @@
     <div class="section1 text-right" style="float: right;">
 
       <span v-if='token!==null && admin!=="true"'>
-      <!--<b-button squared
+      <b-button squared
       size="lg"
       variant="success"
       style="width:200px; height:50px;"
       href="/user"
+      v-if='admin!=="true"'
       >ユーザーページ
-      </b-button>-->
+      </b-button>
+      <b-button squared
+      size="lg"
+      variant="success"
+      style="width:200px; height:50px;"
+      href="/admin"
+      v-else
+      >管理者ページ
+      </b-button>
       <b-button squared
       size="lg"
       variant="danger"
