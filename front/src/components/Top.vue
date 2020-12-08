@@ -22,7 +22,7 @@ h1 {
             lead="Programming Beginner"
           ></b-jumbotron>
 
-          <div id="for-develop">
+          <!-- <div id="for-develop">
             <p class="h2">開発用</p>
             <b-list-group>
               <b-list-group-item to="/login">ログイン画面へ</b-list-group-item>
@@ -34,6 +34,13 @@ h1 {
                 >問題画面へ(id=1)</b-list-group-item
               >
               <b-list-group-item to="/admin">管理者画面へ</b-list-group-item>
+            </b-list-group>
+          </div> -->
+          <div>
+            <p class="h2">About</p>
+            <b-list-group>
+              <b-list-group-item to="#">このアプリについて</b-list-group-item>
+              <b-list-group-item to="#">問い合わせ</b-list-group-item>
             </b-list-group>
           </div>
         </b-col>
