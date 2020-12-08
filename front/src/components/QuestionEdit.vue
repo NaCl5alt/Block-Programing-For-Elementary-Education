@@ -170,15 +170,15 @@ export default {
     async mtFunc() {
       this.id = this.$route.params["id"];
 
-      await Axios.get(`/api/question/contents/${this.id}`,{
-        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      await Axios.get(`/api/question/contents/${this.id}`, {
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` },
       })
         .then((res) => {
           this.title = res.data["title"];
           this.content = res.data["content"];
           this.answer = res.data["answer"];
           for (let i = 0; i < res.data.hints.length; i++) {
-            this.hints = this.hints.push({
+            this.hints.push({
               id: i,
               hint: res.data.hints[i].hint,
             });
@@ -189,7 +189,7 @@ export default {
           this.title = "[ERROR] タイトルが存在しません。";
           this.content = "[ERROR] 問題が存在しません。";
           this.answer = "[ERROR] 答えが存在しません。";
-          this.hints = this.hints.concat([
+          this.hints.push([
             { id: 1, hint: "[ERROR] ヒント1が存在しません。" },
             { id: 2, hint: "[ERROR] ヒント2が存在しません。" },
           ]);
@@ -198,12 +198,19 @@ export default {
       this.editable_hintCount = this.hints.length;
     },
     async edit() {
-      await Axios.post(`/api/question/${this.id}`, {
-        title: this.title,
-        content: this.content,
-        answer: this.answer,
-        hints: this.hints,
-      })
+      // 編集された内容を送る
+      await Axios.post(
+        `/api/question/${this.id}`,
+        {
+          title: this.title,
+          content: this.content,
+          answer: this.answer,
+          hints: this.hints,
+        },
+        {
+          headers: { Authorization: `Bearer ${this.$cookies.get("token")}` },
+        }
+      )
         .then((res) => {
           switch (res.status) {
             case 201:
@@ -230,8 +237,8 @@ export default {
     async deleteThis() {
       console.log("編集");
       this.$bvModal.hide("modal-1");
-      await Axios.delete(`/question/${this.id}`,{
-        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
+      await Axios.delete(`/question/${this.id}`, {
+        headers: { Authorization: `Bearer ${this.$cookies.get("token")}` },
       })
         .then((res) => {
           switch (res.status) {

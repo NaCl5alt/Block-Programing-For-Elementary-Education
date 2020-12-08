@@ -231,6 +231,7 @@ export default {
       //     this.visibleHint = "[ERROR] " + questionId;
       //     console.log(error);
       //   });
+      // 表示するしないの処理
       if (hintId != this.visibleId) {
         this.visibleId = !this.visibleId;
       } else {
