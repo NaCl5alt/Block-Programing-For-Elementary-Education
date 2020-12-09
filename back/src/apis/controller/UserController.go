@@ -29,6 +29,10 @@ type RefreshResponse struct {
 	Token string `json:"token"`
 }
 
+type UserProgressResponse struct {
+	QuestionId []int `json:"progress"`
+}
+
 func (pc UserController) List(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
@@ -39,15 +43,17 @@ func (pc UserController) List(c *gin.Context) {
 		return
 	}
 
+	user := []model.User{}
+
 	db := db.GormConnect()
-	users := []model.User{}
-	db.Find(&users)
-	c.JSON(http.StatusOK, users)
+	db.Find(&user)
+
+	c.JSON(http.StatusOK, user)
 }
 
 func (pc UserController) Create(c *gin.Context) {
-	db := db.GormConnect()
 	user := model.User{}
+
 	now := time.Now()
 	user.CreatedAt = now
 	user.UpdatedAt = now
@@ -56,8 +62,10 @@ func (pc UserController) Create(c *gin.Context) {
 	if err != nil {
 		c.String(http.StatusBadRequest, "Request is failed: "+err.Error())
 	}
+
 	user.Password, err = crypt.PasswordEncrypt(user.Password)
-	db.NewRecord(user)
+
+	db := db.GormConnect()
 	db.Create(&user)
 	if db.NewRecord(user) == false {
 		c.JSON(http.StatusOK, user)
@@ -65,7 +73,6 @@ func (pc UserController) Create(c *gin.Context) {
 }
 
 func (pc UserController) Login(c *gin.Context) {
-	db := db.GormConnect()
 	user := model.User{}
 	users := model.User{}
 
@@ -73,6 +80,8 @@ func (pc UserController) Login(c *gin.Context) {
 	if err != nil {
 		c.String(http.StatusBadRequest, "request failed(json error)")
 	}
+
+	db := db.GormConnect()
 	db.First(&users, "user_id=?", user.User_Id)
 
 	err = crypt.CompareHashAndPassword(users.Password, user.Password)
@@ -95,12 +104,12 @@ func (pc UserController) Login(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Request is failed")
 	}
 
-	adf := LoginResponse{
+	response := LoginResponse{
 		TokenString,
 		users.Admin,
 	}
 
-	c.JSON(http.StatusOK, adf)
+	c.JSON(http.StatusOK, response)
 }
 
 func (pc UserController) Delete(c *gin.Context) {
@@ -115,9 +124,10 @@ func (pc UserController) Delete(c *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
-	users := model.User{}
-	db.Delete(&users, "user_id=?", claims["user"])
-	c.String(http.StatusCreated, "complete delete")
+	user := model.User{}
+	db.Delete(&user, "user_id=?", claims["user"])
+
+	c.String(http.StatusCreated, "completed user delete")
 }
 
 func (pc UserController) Edit(c *gin.Context) {
@@ -131,22 +141,23 @@ func (pc UserController) Edit(c *gin.Context) {
 	}
 	claims := token.Claims.(jwt.MapClaims)
 
-	db := db.GormConnect()
-	users := model.User{}
 	user := model.User{}
+	user_json := model.User{}
 
-	err = c.BindJSON(&user)
+	err = c.BindJSON(&user_json)
 	if err != nil {
 		c.String(http.StatusBadRequest, "request failed(json error)")
 	}
 
-	users.User_Id = claims["user"].(string)
-	users_after := users
+	db := db.GormConnect()
+	user.User_Id = claims["user"].(string)
+	users_after := user
 	db.First(&users_after)
-	users_after.User_Name = user.User_Name
-	db.Model(&users).Update(&users_after)
+	users_after.User_Name = user_json.User_Name
+	db.Model(&user).Update(&users_after)
 	db.Save(&users_after)
-	c.String(http.StatusCreated, "complete edit")
+
+	c.String(http.StatusCreated, "completed username edit")
 }
 
 func (pc UserController) Check(c *gin.Context) {
@@ -159,16 +170,18 @@ func (pc UserController) Check(c *gin.Context) {
 	}
 
 	if err := db.Where("user_id = ?", user.User_Id).First(&user).Error; err != nil {
-		adf := CheckResponse{
+		response := CheckResponse{
 			false,
 		}
-		c.JSON(http.StatusOK, adf)
+		c.JSON(http.StatusOK, response)
 		return
 	}
-	adf := CheckResponse{
+
+	response := CheckResponse{
 		true,
 	}
-	c.JSON(http.StatusOK, adf)
+
+	c.JSON(http.StatusOK, response)
 }
 
 func (pc UserController) IdEdit(c *gin.Context) {
@@ -183,21 +196,21 @@ func (pc UserController) IdEdit(c *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
-	users := model.User{}
 	user := model.User{}
+	user_json := model.User{}
 
-	err = c.BindJSON(&user)
+	err = c.BindJSON(&user_json)
 	if err != nil {
 		c.String(http.StatusBadRequest, "request failed(json error)")
 	}
 
-	users.User_Id = claims["user"].(string)
-	users_after := users
+	user.User_Id = claims["user"].(string)
+	users_after := user
 	db.First(&users_after)
-	users_after.User_Id = user.User_Id
-	db.Model(&users).Update(&users_after)
+	users_after.User_Id = user_json.User_Id
+	db.Model(&user).Update(&users_after)
 	db.Save(&users_after)
-	c.String(http.StatusCreated, "complete edit")
+	c.String(http.StatusCreated, "completed userid edit")
 }
 
 func (pc UserController) PasswordEdit(c *gin.Context) {
@@ -212,21 +225,21 @@ func (pc UserController) PasswordEdit(c *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
-	users := model.User{}
 	user := model.User{}
+	user_json := model.User{}
 
-	err = c.BindJSON(&user)
+	err = c.BindJSON(&user_json)
 	if err != nil {
 		c.String(http.StatusBadRequest, "request failed(json error)")
 	}
 
-	users.User_Id = claims["user"].(string)
-	users_after := users
+	user.User_Id = claims["user"].(string)
+	users_after := user
 	db.First(&users_after)
-	users_after.Password, err = crypt.PasswordEncrypt(user.Password)
-	db.Model(&users).Update(&users_after)
+	users_after.Password, err = crypt.PasswordEncrypt(user_json.Password)
+	db.Model(&user).Update(&users_after)
 	db.Save(&users_after)
-	c.String(http.StatusCreated, "complete edit")
+	c.String(http.StatusCreated, "complete password edit")
 }
 
 func (pc UserController) Refresh(c *gin.Context) {
@@ -259,11 +272,11 @@ func (pc UserController) Refresh(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Request is failed")
 	}
 
-	adf := RefreshResponse{
+	response := RefreshResponse{
 		TokenString,
 	}
 
-	c.JSON(http.StatusOK, adf)
+	c.JSON(http.StatusOK, response)
 }
 
 func (pc UserController) TokenCheck(c *gin.Context) {
@@ -294,21 +307,15 @@ func (pc UserController) UserProgress(c *gin.Context) {
 	db.First(&user, "user_id=?", claims["user"])
 	progress := []model.Progress{}
 	db.Find(&progress, "user_id=?", user.ID)
-	var count int
-	db.Model(&progress).Where("user_id = ?", user.ID).Count(&count)
 
 	var proid []int
-	for i := 0; i < count; i++ {
-		proid = append(proid, progress[i].Pro_Id)
+	for _, h := range progress {
+		proid = append(proid, h.Pro_Id)
 	}
 
-	type ResponseProgress struct {
-		QuestionId []int `json:"progress"`
-	}
-
-	adf := ResponseProgress{
+	response := UserProgressResponse{
 		proid,
 	}
 
-	c.JSON(http.StatusOK, adf)
+	c.JSON(http.StatusOK, response)
 }

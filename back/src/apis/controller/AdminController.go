@@ -61,15 +61,17 @@ func (pc AdminController) AddQuestion(c *gin.Context) {
 
 	db := db.GormConnect()
 	request := QuestionRequest{}
+
 	err = c.BindJSON(&request)
 	if err != nil {
 		c.String(http.StatusBadRequest, "request failed(json error)")
 	}
+
 	problem := model.Problem{}
 	problem.Pro_Title = request.Title
 	problem.Pro_Content = request.Content
 	problem.Pro_Answer = request.Answer
-	db.NewRecord(problem)
+
 	db.Create(&problem)
 	db.First(&problem)
 	hint := model.Hint{}
@@ -176,11 +178,11 @@ func (pc AdminController) AllProgress(c *gin.Context) {
 			QuestionId: proid,
 		})
 	}
-	adf := ProgressResponse{
+	response := ProgressResponse{
 		prog,
 	}
 
-	c.JSON(http.StatusOK, adf)
+	c.JSON(http.StatusOK, response)
 }
 
 func (pc AdminController) UserIdProgress(c *gin.Context) {
@@ -210,27 +212,25 @@ func (pc AdminController) UserIdProgress(c *gin.Context) {
 		QuestionId []int `json:"progress"`
 	}
 
-	adf := ResponseProgress{
+	response := ResponseProgress{
 		proid,
 	}
 
-	c.JSON(http.StatusOK, adf)
+	c.JSON(http.StatusOK, response)
 }
 
-//コミット用コメント
 func (pc AdminController) DetailGET(c *gin.Context) {
-	/*
-		tokenString := c.Request.Header.Get("Authorization")
-		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+	tokenString := c.Request.Header.Get("Authorization")
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-		fmt.Println("debug")
+	fmt.Println("debug")
 
-		_, err := auth.VerifyToken(tokenString)
-		if err != nil {
-			c.String(http.StatusUnauthorized, "Unauthorized")
-			return
-		}
-	*/
+	_, err := auth.VerifyToken(tokenString)
+	if err != nil {
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
 	db := db.GormConnect()
 	problem := model.Problem{}
 	hints := []model.Hint{}
@@ -262,12 +262,12 @@ func (pc AdminController) DetailGET(c *gin.Context) {
 
 	fmt.Println("qid:" + c.Param("id"))
 
-	adf := QuestionDetail{
+	response := QuestionDetail{
 		Title:   problem.Pro_Title,
 		Content: problem.Pro_Content,
 		Answer:  problem.Pro_Answer,
 		Hints:   res_hints,
 	}
 
-	c.JSON(http.StatusOK, adf)
+	c.JSON(http.StatusOK, response)
 }

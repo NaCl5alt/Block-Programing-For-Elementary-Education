@@ -29,7 +29,7 @@ type QuestionHint struct {
 	Hint string `json:"hint"`
 }
 
-type QuestionContents struct {
+type QuestionContentsResponse struct {
 	Id      int            `json:"qid"`
 	Title   string         `json:"title"`
 	Content string         `json:"content"`
@@ -54,7 +54,7 @@ type PagingResponse struct {
 	Progress       bool   `json:""progress`
 }
 
-func (pc QuestionController) Get(c *gin.Context) {
+func (pc QuestionController) GetFirst(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
@@ -63,17 +63,13 @@ func (pc QuestionController) Get(c *gin.Context) {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
-
 	claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
-
 	problem := model.Problem{}
 	db.First(&problem)
-
 	user := model.User{}
 	db.First(&user, "user_id=?", claims["user"])
-
 	progress := []model.Progress{}
 	db.Find(&progress, "user_id=?", user.ID)
 
@@ -87,14 +83,13 @@ func (pc QuestionController) Get(c *gin.Context) {
 		match = true
 	}
 
-	adf := QuestionResponse{
+	response := QuestionResponse{
 		Id:       int(problem.ID),
 		Title:    problem.Pro_Title,
 		Progress: match,
 	}
 
-	c.JSON(http.StatusOK, adf)
-
+	c.JSON(http.StatusOK, response)
 }
 
 func (pc QuestionController) Contents(c *gin.Context) {
@@ -130,14 +125,14 @@ func (pc QuestionController) Contents(c *gin.Context) {
 
 	fmt.Println("qid:" + c.Param("id"))
 
-	adf := QuestionContents{
+	response := QuestionContentsResponse{
 		Id:      int(problem.ID),
 		Title:   problem.Pro_Title,
 		Content: problem.Pro_Content,
 		Hints:   res_hints,
 	}
 
-	c.JSON(http.StatusOK, adf)
+	c.JSON(http.StatusOK, response)
 }
 
 func (pc QuestionController) Answer(c *gin.Context) {
@@ -186,11 +181,11 @@ func (pc QuestionController) Answer(c *gin.Context) {
 		accept = false
 	}
 
-	adf := QuestionAnswer{
+	response := QuestionAnswer{
 		IsCorrect: accept,
 	}
 
-	c.JSON(http.StatusOK, adf)
+	c.JSON(http.StatusOK, response)
 }
 
 func (pc QuestionController) CountGet(c *gin.Context) {
@@ -240,7 +235,7 @@ func (pc QuestionController) PagingGet(c *gin.Context) {
 	user := model.User{}
 	db.First(&user, "user_id=?", claims["user"])
 
-	qid := 1
+	qid := json.Question_Id
 	db.Limit(50).Where("ID >= ?", qid).Find(&problem)
 
 	for _, h := range problem {

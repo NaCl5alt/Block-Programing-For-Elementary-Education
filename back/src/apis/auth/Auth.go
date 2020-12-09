@@ -5,7 +5,6 @@ import (
 )
 
 func VerifyToken(tokenString string) (*jwt.Token, error) {
-
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte("secret"), nil
 	})
