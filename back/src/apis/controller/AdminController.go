@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 
 	"../auth"
@@ -53,18 +54,27 @@ func (pc AdminController) AddQuestion(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	_, err := auth.VerifyToken(tokenString)
+	token, err := auth.VerifyToken(tokenString)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "token is invalid")
 		return
 	}
+	claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
+	user_admin := model.User{}
+	db.Where("user_id=?", claims["user"].(string)).First(&user_admin)
+	if user_admin.Admin == false {
+		c.String(http.StatusUnauthorized, "Unauthorized(Admin)")
+		return
+	}
+
 	request := QuestionRequest{}
 
 	err = c.BindJSON(&request)
 	if err != nil {
 		c.String(http.StatusBadRequest, "request failed(json error)")
+		return
 	}
 
 	problem := model.Problem{}
@@ -89,9 +99,18 @@ func (pc AdminController) Delete(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	_, err := auth.VerifyToken(tokenString)
+	token, err := auth.VerifyToken(tokenString)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+	claims := token.Claims.(jwt.MapClaims)
+
+	db := db.GormConnect()
+	user_admin := model.User{}
+	db.Where("user_id=?", claims["user"].(string)).First(&user_admin)
+	if user_admin.Admin == false {
+		c.String(http.StatusUnauthorized, "Unauthorized(Admin)")
 		return
 	}
 
@@ -99,7 +118,6 @@ func (pc AdminController) Delete(c *gin.Context) {
 	u64, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	problem.ID = uint(u64)
 
-	db := db.GormConnect()
 	db.Delete(&problem)
 	c.String(http.StatusCreated, "complete delete")
 }
@@ -108,9 +126,18 @@ func (pc AdminController) EditQuestion(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	_, err := auth.VerifyToken(tokenString)
+	token, err := auth.VerifyToken(tokenString)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+	claims := token.Claims.(jwt.MapClaims)
+
+	db := db.GormConnect()
+	user_admin := model.User{}
+	db.Where("user_id=?", claims["user"].(string)).First(&user_admin)
+	if user_admin.Admin == false {
+		c.String(http.StatusUnauthorized, "Unauthorized(Admin)")
 		return
 	}
 
@@ -120,7 +147,6 @@ func (pc AdminController) EditQuestion(c *gin.Context) {
 		c.String(http.StatusBadRequest, "request failed(json error)")
 	}
 
-	db := db.GormConnect()
 	problem := model.Problem{}
 	u64, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	problem.ID = uint(u64)
@@ -150,13 +176,21 @@ func (pc AdminController) AllProgress(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	_, err := auth.VerifyToken(tokenString)
+	token, err := auth.VerifyToken(tokenString)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "token is invalid")
 		return
 	}
+	claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
+	user_admin := model.User{}
+	db.Where("user_id=?", claims["user"].(string)).First(&user_admin)
+	if user_admin.Admin == false {
+		c.String(http.StatusUnauthorized, "Unauthorized(Admin)")
+		return
+	}
+
 	user := []model.User{}
 	prog := []ProgressUserId{}
 	var count int
@@ -189,15 +223,23 @@ func (pc AdminController) UserIdProgress(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	_, err := auth.VerifyToken(tokenString)
+	token, err := auth.VerifyToken(tokenString)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "token is invalid")
+		return
+	}
+	claims := token.Claims.(jwt.MapClaims)
+
+	db := db.GormConnect()
+	user_admin := model.User{}
+	db.Where("user_id=?", claims["user"].(string)).First(&user_admin)
+	if user_admin.Admin == false {
+		c.String(http.StatusUnauthorized, "Unauthorized(Admin)")
 		return
 	}
 
 	u64, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	userid := uint(u64)
-	db := db.GormConnect()
 	progress := []model.Progress{}
 	db.Find(&progress, "user_id=?", userid)
 	var count int
@@ -225,13 +267,21 @@ func (pc AdminController) DetailGET(c *gin.Context) {
 
 	fmt.Println("debug")
 
-	_, err := auth.VerifyToken(tokenString)
+	token, err := auth.VerifyToken(tokenString)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
+	claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
+	user_admin := model.User{}
+	db.Where("user_id=?", claims["user"].(string)).First(&user_admin)
+	if user_admin.Admin == false {
+		c.String(http.StatusUnauthorized, "Unauthorized(Admin)")
+		return
+	}
+
 	problem := model.Problem{}
 	hints := []model.Hint{}
 
