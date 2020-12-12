@@ -70,7 +70,7 @@ export default {
     async mtFunc() {
       this.userId = this.$route.params["id"];
 
-      await Axios.get(`/api/user/progress/${this.id}`,{
+      await Axios.get(`/api/user/progress/${this.userId}`,{
         headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
       })
         .then((res) => {

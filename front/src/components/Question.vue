@@ -12,7 +12,7 @@
                 >
               </h2>
               <hr class="my-4" />
-              <p>{{ questionContent }}</p>
+              <p style="text-align: left;">{{ questionContent }}</p>
               <div role="hintlist">
                 <ul style="list-style: none">
                   <div v-for="h in questionsHints" :key="h.id">
@@ -30,7 +30,7 @@
                 <p><br /><br /></p>
                 <div>
                   <b-collapse id="collapse" v-model="visible">
-                    <b-card>{{ visibleHint }}</b-card>
+                    <b-card style="text-align: left;">{{ visibleHint.hints }}</b-card>
                   </b-collapse>
                 </div>
               </div>
@@ -54,6 +54,13 @@
                     v-on:click="checkAnswer"
                     >答えを送信</b-button
                   >
+                <b-button
+                  pill
+                  style="float: right"
+                  variant="primary"
+                  v-on:click="runCode()"
+                  >▶プログラムを実行</b-button
+                >
                 </b-col>
               </b-row>
               <div v-if="showAnswer">
@@ -65,15 +72,6 @@
               <div v-else>
                 <b-alert variant="light" show></b-alert>
               </div>
-              <b-row>
-                <b-button
-                  pill
-                  style="float: right"
-                  variant="primary"
-                  v-on:click="runCode()"
-                  >▶プログラムを実行</b-button
-                >
-              </b-row>
             </div>
           </b-col>
         </b-row>
@@ -173,12 +171,15 @@ export default {
         headers: { Authorization: `Bearer ${this.$cookies.get("token")}` },
       })
         .then((res) => {
-          // console.log(res.data)
+          console.log(res.data)
           var bufHints = [];
           var bufStr0 = "";
           var bufStr1 = "";
           this.questionTitle = res.data["title"]; // タイトルを格納
           this.questionContent = res.data["content"]; // 問題文を格納
+          console.log(res.data.hints)
+          console.log(res.data.hints.length)
+          console.log(res.data.hints[0])
           for (let i = 0; i < res.data["hints"].length; i++) {
             bufStr0 = "collapse-" + i;
             bufStr1 = "ヒント " + i;
@@ -186,7 +187,7 @@ export default {
               id: i,
               collapseId: bufStr0,
               title: bufStr1,
-              hints: res.data["hint"][i],
+              hints: res.data["hints"][i],
             });
           }
           if (res.data["hints"][0] == null) {
@@ -250,7 +251,7 @@ export default {
     // 回答チェック
     async checkAnswer() {
       await Axios.post(
-        `/api/question/${this.questionId}`,
+        `/api/question/answer/${this.questionId}`,
         {
           answer: this.usersAnswer,
         },
@@ -276,8 +277,8 @@ export default {
         });
     },
   },
-  beforeMount() {
-    this.mtFunc();
+  async beforeMount() {
+    await this.mtFunc();
   },
 };
 </script>

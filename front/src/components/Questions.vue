@@ -51,7 +51,7 @@
               <b-td class="text-right">{{ q.title }}</b-td>
               <b-td>
                 <router-link
-                  v-if="q.progress"
+                  v-if="!q.progress"
                   class="btn btn-info"
                   :to="{ name: 'Question', params: { id: q.qid } }"
                   >トライ!</router-link
