@@ -130,25 +130,22 @@ export default {
           });
         });
       this.end = this.questions.length;
-      console.log(this.questions);
     },
     async getQuestions() {
       var buf_progress = false;
-      await Axios.get("/api/question/paging", {
-        qid: this.end,
-      },{
+      await Axios.get(`/api/question/paging?qid=${this.end}`,{
         headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
       })
         .then((res) => {
-          for (let i = this.end + 1; i <= this.end + 50; i++) {
-            if (i <= this.max) {
-              buf_progress = this.data.includes(res.data[i]["qid"]);
+          for(let i=0;i<res.data.length;i++){
+            console.log("res.data")
+            console.log(res.data[i])
+            buf_progress = this.data.includes(res.data[i]["qid"]);
               this.questions.push({
-                id: res.data[i]["id"],
+                id: res.data[i]["qid"],
                 title: res.data[i]["title"],
                 progress: buf_progress,
               });
-            }
           }
         })
         .catch((error) => {
@@ -165,7 +162,6 @@ export default {
           }
         });
       this.end = this.questions.length;
-      console.log(this.questions);
     },
   },
   beforeMount() {
