@@ -222,11 +222,11 @@ func (pc QuestionController) PagingGet(c *gin.Context) {
 	}
 	claims := token.Claims.(jwt.MapClaims)
 
-	json := Json{}
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	// json := Json{}
+	// if err := c.ShouldBindJSON(&json); err != nil {
+	// c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// return
+	// }
 
 	db := db.GormConnect()
 	problem := []model.Problem{}
@@ -235,7 +235,8 @@ func (pc QuestionController) PagingGet(c *gin.Context) {
 	user := model.User{}
 	db.First(&user, "user_id=?", claims["user"])
 
-	qid := json.Question_Id
+	// qid := json.Question_Id
+	qid := c.Query("qid")
 	db.Limit(50).Where("ID >= ?", qid).Find(&problem)
 
 	for _, h := range problem {
