@@ -33,6 +33,7 @@ type QuestionContentsResponse struct {
 	Id      int            `json:"qid"`
 	Title   string         `json:"title"`
 	Content string         `json:"content"`
+	Answer  string         `json:"answer,omitempty"`
 	Hints   []QuestionHint `json:"hints"`
 }
 
@@ -101,10 +102,14 @@ func (pc QuestionController) Contents(c *gin.Context) {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
+	claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
 	problem := model.Problem{}
 	hints := []model.Hint{}
+
+	user_admin := model.User{}
+	db.Where("user_id=?", claims["user"].(string)).First(&user_admin)
 
 	u64, err := strconv.ParseUint(c.Param("id"), 10, 0)
 	problem.ID = uint(u64)
@@ -125,11 +130,21 @@ func (pc QuestionController) Contents(c *gin.Context) {
 
 	fmt.Println("qid:" + c.Param("id"))
 
-	response := QuestionContentsResponse{
-		Id:      int(problem.ID),
-		Title:   problem.Pro_Title,
-		Content: problem.Pro_Content,
-		Hints:   res_hints,
+	if user_admin.Admin {
+		response := QuestionContentsResponse{
+			Id:      int(problem.ID),
+			Title:   problem.Pro_Title,
+			Content: problem.Pro_Content,
+			Answer:  problem.Pro_Answer,
+			Hints:   res_hints,
+		}
+	} else {
+		response := QuestionContentsResponse{
+			Id:      int(problem.ID),
+			Title:   problem.Pro_Title,
+			Content: problem.Pro_Content,
+			Hints:   res_hints,
+		}
 	}
 
 	c.JSON(http.StatusOK, response)
