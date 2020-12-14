@@ -232,7 +232,9 @@ func (pc AdminController) UserIdProgress(c *gin.Context) {
 
 	db := db.GormConnect()
 	user_admin := model.User{}
-	db.Where("user_id=?", claims["user"].(string)).First(&user_admin)
+	u64, err := strconv.ParseUint(c.Param("id"), 10, 0)
+	user_admin.ID = uint(u64)
+	db.Where("id=?", user_admin.ID).First(&user_admin)
 	if user_admin.Admin == false {
 		c.String(http.StatusUnauthorized, "Unauthorized(Admin)")
 		return
