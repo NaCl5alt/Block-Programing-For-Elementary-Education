@@ -200,7 +200,7 @@ export default {
     async edit() {
       // 編集された内容を送る
       await Axios.post(
-        `/api/question/${this.id}`,
+        `/api/question/edit/${this.id}`,
         {
           title: this.title,
           content: this.content,
@@ -237,7 +237,7 @@ export default {
     async deleteThis() {
       console.log("編集");
       this.$bvModal.hide("modal-1");
-      await Axios.delete(`/question/${this.id}`, {
+      await Axios.delete(`/api/question/${this.id}`, {
         headers: { Authorization: `Bearer ${this.$cookies.get("token")}` },
       })
         .then((res) => {
