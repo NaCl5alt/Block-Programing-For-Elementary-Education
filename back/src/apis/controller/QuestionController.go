@@ -237,7 +237,7 @@ func (pc QuestionController) PagingGet(c *gin.Context) {
 
 	// qid := json.Question_Id
 	qid := c.Query("qid")
-	db.Limit(50).Where("ID >= ?", qid).Find(&problem)
+	db.Limit(50).Where("ID > ?", qid).Find(&problem)
 
 	for _, h := range problem {
 		count := 0
