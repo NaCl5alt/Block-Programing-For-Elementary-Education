@@ -112,9 +112,7 @@ export default {
     },
     async getQuestions() {
       var test = false;
-      await Axios.get("/api/question/paging", {
-        qid: this.end,
-      },{
+      await Axios.get(`/api/question/paging?qid=${this.end}`,{
         headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
       })
         .then((res) => {

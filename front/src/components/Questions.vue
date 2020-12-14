@@ -144,14 +144,11 @@ export default {
     },
     async getQuestions() {
       var test = false;
-      console.log("getQuestion")
-      console.log(this.$cookies.get("token"))
-      console.log(this.end)
       await Axios.get(`/api/question/paging?qid=${this.end}`,{
         headers: { Authorization: `Bearer ${this.$cookies.get("token")}` }
       })
         .then((res) => {
-          this.questions.push(res.data);
+          this.questions = this.questions.concat(res.data);
         })
         .catch((error) => {
           console.log(error);
