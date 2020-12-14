@@ -97,12 +97,12 @@ func (pc QuestionController) Contents(c *gin.Context) {
 	tokenString := c.Request.Header.Get("Authorization")
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-	_, err := auth.VerifyToken(tokenString)
+	token, err := auth.VerifyToken(tokenString)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
-	claims := tokenString.Claims.(jwt.MapClaims)
+	claims := token.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
 	problem := model.Problem{}
