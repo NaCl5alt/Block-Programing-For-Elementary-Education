@@ -102,7 +102,7 @@ func (pc QuestionController) Contents(c *gin.Context) {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
-	claims := token.Claims.(jwt.MapClaims)
+	claims := tokenString.Claims.(jwt.MapClaims)
 
 	db := db.GormConnect()
 	problem := model.Problem{}
@@ -130,8 +130,9 @@ func (pc QuestionController) Contents(c *gin.Context) {
 
 	fmt.Println("qid:" + c.Param("id"))
 
+	response := QuestionContentsResponse{}
 	if user_admin.Admin {
-		response := QuestionContentsResponse{
+		response = QuestionContentsResponse{
 			Id:      int(problem.ID),
 			Title:   problem.Pro_Title,
 			Content: problem.Pro_Content,
@@ -139,7 +140,7 @@ func (pc QuestionController) Contents(c *gin.Context) {
 			Hints:   res_hints,
 		}
 	} else {
-		response := QuestionContentsResponse{
+		response = QuestionContentsResponse{
 			Id:      int(problem.ID),
 			Title:   problem.Pro_Title,
 			Content: problem.Pro_Content,
