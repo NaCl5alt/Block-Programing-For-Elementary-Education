@@ -182,8 +182,12 @@ func (pc QuestionController) Answer(c *gin.Context) {
 		claims := token.Claims.(jwt.MapClaims)
 
 		user := model.User{}
-		user.User_Id = claims["user"].(string)
-		db.First(&user)
+		if db.Where(&model.User{User_Id: claims["user"].(string)}).First(&user).RecordNotFound(){
+			c.JSON(http.StatusBadRequest, gin.H{})
+			return
+		}
+
+		fmt.Println(user)
 
 		progress := model.Progress{}
 		progress.Pro_Id = int(problem.ID)
